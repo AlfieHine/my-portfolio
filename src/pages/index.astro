@@ -1,0 +1,709 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Alfie Hine | IT Infrastructure & Systems Specialist">
+	
+	<!-- STICKY TOP NAVIGATION -->
+	<nav class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#090a0f]/80 border-b border-slate-800/60 px-6 py-4 transition-all">
+		<div class="max-w-6xl mx-auto flex items-center justify-between">
+			<a href="/" class="text-white font-mono font-bold tracking-tight hover:text-cyan-400 transition">
+				alfie<span class="text-cyan-400">.</span>hine
+			</a>
+
+			<div class="hidden md:flex items-center gap-8 text-sm font-mono">
+				<a href="/projects" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+					<span class="text-cyan-400 text-xs">01</span> Projects
+				</a>
+				<a href="/work" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+					<span class="text-cyan-400 text-xs">02</span> Work
+				</a>
+				<a href="/about" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+					<span class="text-cyan-400 text-xs">03</span> About
+				</a>
+			</div>
+
+			<div class="flex items-center gap-3">
+				<button id="search-btn" type="button" onclick="window.toggleModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-mono px-3 py-1.5 rounded-lg border border-slate-800 transition cursor-pointer">
+					<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+					<span>Search</span>
+					<kbd class="hidden sm:inline bg-slate-950 text-slate-500 px-1.5 py-0.5 rounded text-[10px] border border-slate-800">Ctrl K</kbd>
+				</button>
+				
+				<a href="/cv.pdf" target="_blank" class="hidden sm:inline-block text-xs font-mono text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-lg transition">
+					CV ↗
+				</a>
+				
+				<a href="mailto:contact@example.com" class="text-xs font-mono bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-3 py-1.5 rounded-lg transition shadow-lg shadow-cyan-500/10">
+					Get in touch
+				</a>
+			</div>
+		</div>
+	</nav>
+
+	<main class="max-w-6xl mx-auto px-6 pt-4 pb-24">
+		
+		<!-- HERO SECTION -->
+		<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-20 pt-2">
+			<div class="lg:col-span-7">
+				<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 text-xs font-mono mb-6">
+					<span class="relative flex h-2 w-2">
+						<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+						<span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+					</span>
+					Open to Infrastructure & Technical Roles
+				</div>
+
+				<h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
+					Implementing network solutions<br>
+					that <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">just work</span>.
+				</h1>
+
+				<p class="text-slate-400 text-lg sm:text-xl leading-relaxed mb-8 max-w-2xl font-light">
+					Specialising in school IT infrastructure, automated Google Workspace workflows, and secure virtualised deployments. Focused on straightforward technical communication and dependable systems.
+				</p>
+
+				<div class="flex flex-wrap items-center gap-4 text-sm font-mono">
+					<a href="/projects" class="group relative bg-[#0e131f] hover:bg-[#141b2d] text-slate-100 font-medium px-6 py-3 rounded-xl border border-cyan-500/80 hover:border-cyan-400 transition-all duration-200 shadow-lg shadow-cyan-950/30 flex items-center gap-2.5">
+						<span>See my projects</span>
+						<span class="text-cyan-400 group-hover:translate-x-1 transition-transform duration-200">➔</span>
+					</a>
+
+					<a href="/about" class="text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 bg-slate-900/50 px-6 py-3 rounded-xl transition">
+						About me ↗
+					</a>
+				</div>
+			</div>
+
+			<!-- TERMINAL WIDGET -->
+			<div class="lg:col-span-5">
+				<div class="bg-slate-950/90 border border-slate-800 rounded-xl overflow-hidden shadow-2xl shadow-cyan-950/20 font-mono text-xs">
+					<div class="bg-slate-900/80 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+							<div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+							<div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+						</div>
+						<span class="text-slate-500 text-[11px]">$ SESSION</span>
+					</div>
+
+					<div id="terminal-screen" class="p-4 space-y-2.5 leading-normal h-[240px] overflow-y-auto scroll-smooth">
+						<div id="terminal-content" class="space-y-2"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- FEATURED PROJECTS -->
+		<section class="pt-16 border-t border-slate-800/80">
+			<div class="flex items-center justify-between mb-12">
+				<div>
+					<p class="text-cyan-400 font-mono text-xs mb-1">FEATURED WORK</p>
+					<h2 class="text-3xl font-bold text-white tracking-tight">Projects</h2>
+				</div>
+				<a href="/projects" class="hidden sm:flex text-xs font-mono text-slate-400 hover:text-cyan-400 items-center gap-1 transition">
+					All implementations ➔
+				</a>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+				<div class="group bg-slate-900/40 border border-slate-800/80 hover:border-cyan-500/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 flex flex-col justify-between">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="text-xs font-mono bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 px-2.5 py-1 rounded-full">Automations</span>
+							<span class="text-xs font-mono text-slate-500">Google Ecosystem</span>
+						</div>
+						<h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition mb-3">
+							Bespoke Workspace Escalation & Laptop Tracker
+						</h3>
+						<p class="text-slate-400 text-sm leading-relaxed mb-6 font-light">
+							Architected two custom, automated workflows within strict Google Workspace boundaries: a high-priority teacher help request system to upper management, and an end-to-end laptop loaning and asset tracking engine now daily used by staff.
+						</p>
+					</div>
+					<div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-400 pt-4 border-t border-slate-800/50">
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Google Apps Script</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Automated Workflows</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Education IT</span>
+					</div>
+				</div>
+
+				<div class="group bg-slate-900/40 border border-slate-800/80 hover:border-cyan-500/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 flex flex-col justify-between">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="text-xs font-mono bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 px-2.5 py-1 rounded-full">Homelab / Security</span>
+							<span class="text-xs font-mono text-slate-500">Proxmox / Docker</span>
+						</div>
+						<h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition mb-3">
+							Monitored Self-Hosted Infrastructure Stack
+						</h3>
+						<p class="text-slate-400 text-sm leading-relaxed mb-6 font-light">
+							Configured an isolated container host stack running web services, Nginx reverse proxy with automated SSL renewal, network security tunneling, and continuous uptime monitoring for hosted applications.
+						</p>
+					</div>
+					<div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-400 pt-4 border-t border-slate-800/50">
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Proxmox VE</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Nginx / Reverse Proxy</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Docker</span>
+					</div>
+				</div>
+
+				<div class="md:col-span-2 md:w-5/6 lg:w-3/4 mx-auto w-full group bg-slate-900/40 border border-slate-800/80 hover:border-cyan-500/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 flex flex-col justify-between">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="text-xs font-mono bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 px-2.5 py-1 rounded-full">macOS Management & Networking</span>
+							<span class="text-xs font-mono text-slate-500">Jamf Pro / Ruckus vSZ</span>
+						</div>
+						<h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition mb-3">
+							iMac Suite Modernisation & Network Infrastructure Rebuild
+						</h3>
+						<p class="text-slate-400 text-sm leading-relaxed mb-6 font-light">
+							Full rebuild of a 16-iMac suite using Jamf Pro MDM and Ruckus vSZ. Streamlined deployment processes by stripping out obsolete profiles and policies, re-cabled the workstation setup, and restructured network switch VLAN configs to establish a clean, easily maintainable rack cabinet.
+						</p>
+					</div>
+					<div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-400 pt-4 border-t border-slate-800/50">
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Jamf Pro MDM</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Ruckus vSZ</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">VLAN Configuration</span>
+						<span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Physical Cabling & Rack Cleanup</span>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- CAPABILITIES SECTION -->
+		<section class="pt-24 border-t border-slate-800/60 mt-16">
+			<p class="text-cyan-400 font-mono text-xs mb-1 uppercase tracking-wider">Capabilities</p>
+			<h2 class="text-3xl font-bold text-white tracking-tight mb-12">Core Technical Expertise</h2>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div class="group bg-slate-900/30 border border-slate-800/80 hover:border-cyan-500/50 p-6 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20">
+					<span class="text-cyan-400 font-mono text-sm">01.</span>
+					<h3 class="text-white font-bold text-lg mt-2 mb-3 group-hover:text-cyan-400 transition">Technical Support & Operations</h3>
+					<p class="text-slate-400 text-sm leading-relaxed font-light">
+						Managing IT infrastructure in an educational setting. Clear communication with staff, hardware diagnostics, and rapid ticket resolution.
+					</p>
+				</div>
+
+				<div class="group bg-slate-900/30 border border-slate-800/80 hover:border-cyan-500/50 p-6 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20">
+					<span class="text-cyan-400 font-mono text-sm">02.</span>
+					<h3 class="text-white font-bold text-lg mt-2 mb-3 group-hover:text-cyan-400 transition">Systems & Virtualisation</h3>
+					<p class="text-slate-400 text-sm leading-relaxed font-light">
+						Proxmox VE hypervisors, LXC/KVM container setup, Linux administration (Debian/Ubuntu), and custom SFF hardware deployments.
+					</p>
+				</div>
+
+				<div class="group bg-slate-900/30 border border-slate-800/80 hover:border-cyan-500/50 p-6 rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20">
+					<span class="text-cyan-400 font-mono text-sm">03.</span>
+					<h3 class="text-white font-bold text-lg mt-2 mb-3 group-hover:text-cyan-400 transition">Networking & Storage Pools</h3>
+					<p class="text-slate-400 text-sm leading-relaxed font-light">
+						ZFS pool deployment, zvol dataset recovery, Nginx reverse proxies, automated SSL certificates, and secure Cloudflare tunnel routing.
+					</p>
+				</div>
+			</div>
+		</section>
+
+	</main>
+
+	<!-- FOOTER -->
+	<footer class="border-t border-slate-800/80 bg-[#07080c] pt-12 pb-8 px-6 font-mono text-xs text-slate-400">
+		<div class="max-w-6xl mx-auto">
+			<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-10">
+				<div>
+					<h3 class="text-white font-bold text-sm tracking-tight mb-1">
+						alfie<span class="text-cyan-400">.</span>hine
+					</h3>
+					<p class="text-slate-500 font-light">IT Technician & Infrastructure Specialist</p>
+				</div>
+
+				<div class="flex flex-wrap items-center gap-8">
+					<div class="flex items-center gap-6">
+						<a href="/projects" class="hover:text-cyan-400 transition">Projects</a>
+						<a href="/work" class="hover:text-cyan-400 transition">Work</a>
+						<a href="/about" class="hover:text-cyan-400 transition">About</a>
+					</div>
+					<div class="h-4 w-[1px] bg-slate-800 hidden sm:block"></div>
+					<div class="flex items-center gap-6 text-slate-300">
+						<a href="https://github.com" target="_blank" class="hover:text-cyan-400 transition">GitHub</a>
+						<a href="https://linkedin.com" target="_blank" class="hover:text-cyan-400 transition">LinkedIn</a>
+						<a href="mailto:contact@example.com" class="hover:text-cyan-400 transition">Email</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="w-full h-[1px] bg-slate-800/60 mb-8"></div>
+
+			<div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[11px]">
+				<p>© 2026 Alfie Hine</p>
+				<p>Designed and built from scratch.</p>
+			</div>
+		</div>
+	</footer>
+
+	<!-- SEARCH MODAL -->
+	<div id="command-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[90] flex items-center justify-center px-4 hidden">
+		<div id="command-modal" class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-xl shadow-2xl overflow-hidden font-mono">
+			<div class="p-4 border-b border-slate-800 flex items-center gap-3">
+				<span class="text-cyan-400 text-xs shrink-0 font-bold">$</span>
+				<!-- LIVE FILTERING & CARET CONTROLLER -->
+				<input 
+					id="command-input" 
+					type="text" 
+					placeholder="Search commands or use ↑ ↓ arrow keys..." 
+					oninput="window.handleSearchInput()"
+					class="bg-transparent text-white text-sm focus:outline-none w-full text-center placeholder:text-center caret-transparent"
+				>
+				<kbd class="text-[10px] bg-slate-950 text-slate-500 px-2 py-0.5 rounded border border-slate-800 shrink-0">ESC</kbd>
+			</div>
+			
+			<div id="modal-results" class="p-2 text-xs space-y-1">
+				<a href="/projects" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+					<span>➔ Projects & Implementations</span>
+					<span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+				</a>
+				<a href="/work" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+					<span>➔ Work & Certifications</span>
+					<span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+				</a>
+				<a href="/about" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+					<span>➔ About Me</span>
+					<span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+				</a>
+				<a id="download-cv-btn" href="/cv.pdf" target="_blank" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+					<span>📄 Download CV (PDF)</span>
+					<span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+				</a>
+				
+				<button id="copy-email-btn" type="button" class="modal-item w-full flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition cursor-pointer">
+					<span>📧 Copy Email Address</span>
+					<span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- PERFECTLY CENTERED DYNAMIC PILL CONTAINER -->
+	<div id="flyin-toast" class="fixed bottom-8 left-0 right-0 mx-auto w-fit max-w-[90vw] sm:max-w-md pointer-events-none translate-y-24 opacity-0 transition-all duration-300 ease-out z-[95] flex justify-center items-center">
+		<div class="bg-cyan-500 text-slate-950 font-mono text-xs font-bold px-8 py-3 rounded-full shadow-2xl shadow-cyan-500/30 border border-cyan-300 text-center leading-normal break-words w-full flex items-center justify-center">
+			<span id="toast-message" class="block w-full text-center">Action completed successfully</span>
+		</div>
+	</div>
+
+	<!-- GLOBAL SCRIPTS & MODAL KEYBOARD CONTROLLER -->
+	<script is:inline>
+		window.modalSelectedIndex = -1;
+
+		window.getModalElements = function() {
+			return {
+				backdrop: document.getElementById('command-modal-backdrop'),
+				input: document.getElementById('command-input'),
+				modalItems: Array.from(document.querySelectorAll('.modal-item'))
+			};
+		};
+
+		window.handleSearchInput = function() {
+			const { input, modalItems } = window.getModalElements();
+			if (!input) return;
+
+			const query = input.value.toLowerCase().trim();
+
+			// Toggle Caret based on input content
+			if (query.length > 0) {
+				input.classList.remove('caret-transparent');
+				input.classList.add('caret-cyan-400');
+			} else {
+				input.classList.remove('caret-cyan-400');
+				input.classList.add('caret-transparent');
+			}
+
+			// Filter modal items based on text typed
+			modalItems.forEach(item => {
+				const text = item.textContent?.toLowerCase() || "";
+				if (text.includes(query)) {
+					item.classList.remove('hidden');
+				} else {
+					item.classList.add('hidden');
+				}
+			});
+
+			// Reset selection index after filtering
+			window.modalSelectedIndex = -1;
+			window.updateHighlight();
+		};
+
+		window.updateHighlight = function() {
+			const visibleItems = window.getModalElements().modalItems.filter(item => !item.classList.contains('hidden'));
+			
+			window.getModalElements().modalItems.forEach((item) => {
+				const badge = item.querySelector('.enter-badge');
+				const index = visibleItems.indexOf(item);
+
+				if (index === window.modalSelectedIndex && index !== -1) {
+					item.classList.add('bg-slate-800', 'text-cyan-400', 'border-l-2', 'border-cyan-400');
+					if (badge) badge.classList.remove('hidden');
+				} else {
+					item.classList.remove('bg-slate-800', 'text-cyan-400', 'border-l-2', 'border-cyan-400');
+					if (badge) badge.classList.add('hidden');
+				}
+			});
+		};
+
+		window.toggleModal = function() {
+			const { backdrop, input, modalItems } = window.getModalElements();
+			if (!backdrop) return;
+
+			const isHidden = backdrop.classList.contains('hidden');
+			if (isHidden) {
+				backdrop.classList.remove('hidden');
+				window.modalSelectedIndex = -1;
+				modalItems.forEach(item => item.classList.remove('hidden'));
+				window.updateHighlight();
+				if (input) {
+					input.value = '';
+					window.handleSearchInput();
+					setTimeout(() => {
+						input.focus();
+					}, 50);
+				}
+			} else {
+				backdrop.classList.add('hidden');
+			}
+		};
+
+		// Root Keydown Listener for Ctrl+K, Escape, Arrows, & Enter
+		window.addEventListener('keydown', (e) => {
+			const isK = e.key === 'k' || e.key === 'K' || e.code === 'KeyK';
+			const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+
+			if (isCtrlOrCmd && isK) {
+				e.preventDefault();
+				e.stopPropagation();
+				window.toggleModal();
+				return;
+			}
+
+			const { backdrop } = window.getModalElements();
+			const visibleItems = window.getModalElements().modalItems.filter(item => !item.classList.contains('hidden'));
+
+			if (backdrop && !backdrop.classList.contains('hidden')) {
+				if (e.key === 'Escape') {
+					backdrop.classList.add('hidden');
+					return;
+				}
+
+				if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					if (visibleItems.length === 0) return;
+					window.modalSelectedIndex = (window.modalSelectedIndex + 1) % visibleItems.length;
+					window.updateHighlight();
+					return;
+				}
+
+				if (e.key === 'ArrowUp') {
+					e.preventDefault();
+					if (visibleItems.length === 0) return;
+					if (window.modalSelectedIndex <= 0) {
+						window.modalSelectedIndex = visibleItems.length - 1;
+					} else {
+						window.modalSelectedIndex--;
+					}
+					window.updateHighlight();
+					return;
+				}
+
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					if (window.modalSelectedIndex >= 0 && window.modalSelectedIndex < visibleItems.length) {
+						const selectedElem = visibleItems[window.modalSelectedIndex];
+						selectedElem.click();
+					}
+					return;
+				}
+			}
+		}, true);
+	</script>
+
+	<!-- Interactive Scripts & Terminal -->
+	<script>
+		let activeTerminalTimeouts: any[] = [];
+
+		function clearTerminalTimers() {
+			activeTerminalTimeouts.forEach(t => clearTimeout(t));
+			activeTerminalTimeouts = [];
+		}
+
+		function setupPageScripts() {
+			const backdrop = document.getElementById('command-modal-backdrop');
+			const modalItems = document.querySelectorAll<HTMLElement>('.modal-item');
+			const copyEmailBtn = document.getElementById('copy-email-btn');
+			const downloadCvBtn = document.getElementById('download-cv-btn');
+			
+			const flyinToast = document.getElementById('flyin-toast');
+			const toastMessage = document.getElementById('toast-message');
+
+			let toastTimeout: any = null;
+
+			function showFlyinToast(msg: string) {
+				if (!flyinToast || !toastMessage) return;
+				
+				toastMessage.textContent = msg;
+				if (toastTimeout) clearTimeout(toastTimeout);
+
+				flyinToast.classList.remove('translate-y-24', 'opacity-0');
+				flyinToast.classList.add('translate-y-0', 'opacity-100');
+
+				toastTimeout = setTimeout(() => {
+					flyinToast.classList.remove('translate-y-0', 'opacity-100');
+					flyinToast.classList.add('translate-y-24', 'opacity-0');
+				}, 3200);
+			}
+
+			backdrop?.addEventListener('click', (e) => {
+				if (e.target === backdrop) backdrop.classList.add('hidden');
+			});
+
+			copyEmailBtn?.addEventListener('click', () => {
+				navigator.clipboard.writeText('contact@example.com');
+				showFlyinToast("Email address copied to clipboard!");
+				backdrop?.classList.add('hidden');
+			});
+
+			downloadCvBtn?.addEventListener('click', () => {
+				showFlyinToast("Downloading CV document...");
+				backdrop?.classList.add('hidden');
+			});
+
+			modalItems.forEach((item, idx) => {
+				item.addEventListener('mouseenter', () => {
+					const visibleItems = Array.from(modalItems).filter(i => !i.classList.contains('hidden'));
+					const visibleIdx = visibleItems.indexOf(item);
+					if (visibleIdx !== -1) {
+						(window as any).modalSelectedIndex = visibleIdx;
+						(window as any).updateHighlight();
+					}
+				});
+
+				if (idx < 3) {
+					item.addEventListener('click', () => backdrop?.classList.add('hidden'));
+				}
+			});
+
+			// --- TERMINAL ENGINE ---
+			const terminalScreen = document.getElementById('terminal-screen');
+			const terminalContent = document.getElementById('terminal-content');
+
+			clearTerminalTimers();
+
+			function schedule(fn: Function, delay: number) {
+				const t = setTimeout(fn, delay);
+				activeTerminalTimeouts.push(t);
+			}
+
+			function scrollToBottom() {
+				if (terminalScreen) {
+					terminalScreen.scrollTop = terminalScreen.scrollHeight;
+				}
+			}
+
+			const scenarios = [
+				[
+					{
+						cmd: "boot --profile system",
+						output: [
+							"• interface ..... <span class='text-emerald-400'>ONLINE</span>",
+							"• role .......... <span class='text-slate-200'>IT Technician</span>",
+							"• focus ......... <span class='text-slate-200'>Automations & Infrastructure</span>",
+							"• status ........ <span class='text-cyan-400'>READY</span>"
+						]
+					}
+				],
+				[
+					{
+						cmd: "docker compose up -d --build",
+						output: [
+							"<span class='text-slate-500'>[+] Building 2.1s (6/6) FINISHED</span>",
+							"<span class='text-cyan-400'> => [1/4] STEP: unpack base alpine kernel</span>",
+							"<span class='text-slate-400'> => [2/4] STEP: install dependencies</span>",
+							"<span class='text-slate-400'> => Container jamf-connector  <span class='text-emerald-400'>Started</span></span>",
+							"<span class='text-slate-400'> => Container uptime-kuma    <span class='text-emerald-400'>Running</span></span>",
+							"<span class='text-emerald-400'>✔ Stack deployment complete.</span>"
+						]
+					}
+				],
+				[
+					{
+						cmd: "cloudflared tunnel status",
+						output: [
+							"• tunnel_id ..... <span class='text-slate-200'>8a12f94c-infra-prod</span>",
+							"• edge_conn ..... <span class='text-emerald-400'>4 active connections</span>",
+							"• health ........ <span class='text-emerald-400'>HEALTHY (11ms)</span>"
+						]
+					}
+				],
+				[
+					{
+						cmd: "systemctl restart nginx",
+						output: [
+							"<span class='text-red-400'>Job for nginx.service failed: Permission denied (port 443 binding requires root).</span>"
+						]
+					},
+					{
+						cmd: "sudo systemctl restart nginx",
+						output: [
+							"<span class='text-emerald-400'>[OK] Nginx daemon reloaded successfully. Port 443 bound.</span>"
+						]
+					}
+				],
+				[
+					{
+						cmd: "npm run build",
+						output: [
+							"<span class='text-red-400'>[ERROR] Missing required environment variable: DATABASE_URL</span>",
+							"<span class='text-red-400'>[ERROR] Build aborted.</span>"
+						]
+					},
+					{
+						cmd: "export DATABASE_URL='postgres://local...' && npm run build",
+						output: [
+							"<span class='text-slate-400'>Building static pages...</span>",
+							"<span class='text-emerald-400'>[SUCCESS] Build finished in 1.42s (12 static pages emitted).</span>"
+						]
+					}
+				],
+				[
+					{
+						cmd: "zpool status -x",
+						output: [
+							"<span class='text-amber-400'>WARNING: pool 'storage-pool' is DEGRADED.</span>",
+							"<span class='text-red-400'>One or more devices experienced checksum errors.</span>"
+						]
+					},
+					{
+						cmd: "zpool scrub storage-pool",
+						output: [
+							"<span class='text-emerald-400'>[OK] Scrub started in background. Checksum verification active.</span>"
+						]
+					}
+				]
+			];
+
+			let lastScenarioIdx = -1;
+
+			function getRandomScenarioIndex() {
+				let nextIdx;
+				do {
+					nextIdx = Math.floor(Math.random() * scenarios.length);
+				} while (nextIdx === lastScenarioIdx && scenarios.length > 1);
+				lastScenarioIdx = nextIdx;
+				return nextIdx;
+			}
+
+			function runTerminal() {
+				if (!terminalContent) return;
+				terminalContent.innerHTML = "";
+
+				const scenarioIdx = getRandomScenarioIndex();
+				const scenarioSteps = scenarios[scenarioIdx];
+
+				function executeStep(stepIndex: number) {
+					if (stepIndex >= scenarioSteps.length) {
+						schedule(renderClearPrompt, 400);
+						return;
+					}
+
+					const step = scenarioSteps[stepIndex];
+
+					const linePrompt = document.createElement('div');
+					linePrompt.className = "flex items-center gap-1.5 flex-wrap pt-1";
+					linePrompt.innerHTML = `<span class="text-cyan-400">ahine@infra</span>:<span class="text-slate-500">~</span>$&nbsp;<span class="cmd-text text-slate-200"></span><span class="cursor animate-pulse text-cyan-400 font-bold">█</span>`;
+					terminalContent?.appendChild(linePrompt);
+					scrollToBottom();
+
+					const cmdTextEl = linePrompt.querySelector('.cmd-text') as HTMLElement;
+					const cursorEl = linePrompt.querySelector('.cursor') as HTMLElement;
+
+					schedule(() => {
+						let i = 0;
+						function typeCommand() {
+							if (i < step.cmd.length) {
+								cmdTextEl.textContent += step.cmd.charAt(i);
+								i++;
+								scrollToBottom();
+								schedule(typeCommand, 65);
+							} else {
+								cursorEl.classList.add('hidden');
+								schedule(() => typeOutputLines(step, 0, () => executeStep(stepIndex + 1)), 250);
+							}
+						}
+						typeCommand();
+					}, 450);
+				}
+
+				function typeOutputLines(step: any, lineIdx: number, onComplete: Function) {
+					if (lineIdx >= step.output.length) {
+						schedule(onComplete, 300);
+						return;
+					}
+
+					const lineDiv = document.createElement('div');
+					lineDiv.className = "text-slate-400 pl-2 border-l border-slate-800 text-[11px] leading-relaxed";
+					terminalContent?.appendChild(lineDiv);
+
+					const rawHTML = step.output[lineIdx];
+					let charIndex = 0;
+
+					const tempDiv = document.createElement('div');
+					tempDiv.innerHTML = rawHTML;
+					const plainText = tempDiv.textContent || "";
+
+					function typeChar() {
+						if (charIndex <= plainText.length) {
+							lineDiv.textContent = plainText.slice(0, charIndex);
+							charIndex++;
+							scrollToBottom();
+							schedule(typeChar, 16);
+						} else {
+							lineDiv.innerHTML = rawHTML;
+							schedule(() => typeOutputLines(step, lineIdx + 1, onComplete), 100);
+						}
+					}
+					typeChar();
+				}
+
+				function renderClearPrompt() {
+					const clearPromptLine = document.createElement('div');
+					clearPromptLine.className = "flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-800/40";
+					clearPromptLine.innerHTML = `<span class="text-cyan-400">ahine@infra</span>:<span class="text-slate-500">~</span>$&nbsp;<span class="clear-cmd-text text-slate-200"></span><span class="animate-pulse text-cyan-400 font-bold">█</span>`;
+					terminalContent?.appendChild(clearPromptLine);
+					scrollToBottom();
+
+					const clearCmdEl = clearPromptLine.querySelector('.clear-cmd-text') as HTMLElement;
+
+					schedule(() => {
+						const clearStr = "clear";
+						let c = 0;
+						function typeClear() {
+							if (c < clearStr.length) {
+								clearCmdEl.textContent += clearStr.charAt(c);
+								c++;
+								scrollToBottom();
+								schedule(typeClear, 85);
+							} else {
+								schedule(() => {
+									runTerminal();
+								}, 500);
+							}
+						}
+						typeClear();
+					}, 2500);
+				}
+
+				executeStep(0);
+			}
+
+			runTerminal();
+		}
+
+		setupPageScripts();
+		document.addEventListener('astro:page-load', setupPageScripts);
+	</script>
+</Layout>

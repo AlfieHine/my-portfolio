@@ -145,13 +145,16 @@ const projects = [
 
     <script is:inline>
         function initProjectsSnapPage() {
+            // === ADJUST TYPING SPEED HERE ===
+            // Higher number = faster typing. (e.g., 1.0 = normal, 1.5 = 50% faster, 2.0 = double speed)
+            const SPEED_MULTIPLIER = 1.8;
+
             const pageContainer = document.querySelector('.projects-page-container');
             if (!pageContainer) return;
 
             const sections = document.querySelectorAll('.snap-section');
             const projectRows = document.querySelectorAll('.project-item');
             
-            // Add the global layout footer to the snap sections array so it functions as the final snap stop
             const globalFooter = document.querySelector('footer');
             const allSnapTargets = globalFooter ? [...sections, globalFooter] : [...sections];
 
@@ -196,13 +199,13 @@ const projects = [
                         cmdTextEl.textContent += fullCmd.charAt(i);
                         i++;
                         scrollToBottom();
-                        setTimeout(typeCommand, 65);
+                        setTimeout(typeCommand, Math.max(5, Math.round(65 / SPEED_MULTIPLIER)));
                     } else {
                         cursorEl.classList.add('hidden');
-                        setTimeout(() => typeOutputLines(0), 250);
+                        setTimeout(() => typeOutputLines(0), Math.round(180 / SPEED_MULTIPLIER));
                     }
                 }
-                setTimeout(typeCommand, 300);
+                setTimeout(typeCommand, 200);
 
                 function typeOutputLines(lineIdx) {
                     if (lineIdx >= outputSnippets.length) {
@@ -228,10 +231,10 @@ const projects = [
                             lineDiv.textContent = plainText.slice(0, charIndex);
                             charIndex++;
                             scrollToBottom();
-                            setTimeout(typeChar, 16);
+                            setTimeout(typeChar, Math.max(2, Math.round(16 / SPEED_MULTIPLIER)));
                         } else {
                             lineDiv.innerHTML = rawHTML;
-                            setTimeout(() => typeOutputLines(lineIdx + 1), 100);
+                            setTimeout(() => typeOutputLines(lineIdx + 1), Math.round(70 / SPEED_MULTIPLIER));
                         }
                     }
                     typeChar();
@@ -264,13 +267,12 @@ const projects = [
             const wheelHandler = (e) => {
                 const hoveredTerminal = e.target.closest('.terminal-screen');
                 if (hoveredTerminal) {
-                    // Let the internal terminal scroll naturally if it has scroll room
                     const { scrollTop, scrollHeight, clientHeight } = hoveredTerminal;
                     const isAtTop = scrollTop === 0;
                     const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
                     if ((e.deltaY < 0 && !isAtTop) || (e.deltaY > 0 && !isAtBottom)) {
-                        return; // Allow standard inner terminal scrolling
+                        return;
                     }
                 }
 
@@ -289,6 +291,12 @@ const projects = [
             };
 
             const keyHandler = (e) => {
+                // Ignore page scrolling via arrow keys if the search modal is open
+                const modalBackdrop = document.getElementById('command-modal-backdrop');
+                if (modalBackdrop && !modalBackdrop.classList.contains('hidden')) {
+                    return;
+                }
+
                 if (['ArrowDown', 'PageDown'].includes(e.key)) {
                     if (currentSectionIndex < allSnapTargets.length - 1) {
                         e.preventDefault();

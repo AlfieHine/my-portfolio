@@ -1,0 +1,317 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const projects = [
+    {
+        id: "jamf-fleet",
+        title: "Enterprise macOS Deployment & MDM Pipeline",
+        category: "Systems Engineering / Apple Fleet",
+        description: "Rebuilt and standardized a suite of sixteen iMacs across a public school environment using Jamf Pro and Ruckus vSZ architecture. Streamlined software distribution profiles, automated zero-touch enrollment, and optimized physical network topologies.",
+        command: "jamf policy -event deploy-imac-fleet --verify-vlan",
+        tech: ["Jamf Pro", "macOS", "Ruckus vSZ", "VLAN Configuration", "Bash"],
+        metrics: "16 Nodes / 0-Touch Deployment",
+        outputJson: [
+            "<span class='text-cyan-400'>[INFO]</span> Initializing Jamf Pro MDM handshake...",
+            "<span class='text-emerald-400'>[SUCCESS]</span> Verified secure connection to Ruckus vSZ controller.",
+            "<span class='text-slate-300'>[DEPLOY]</span> Pushing configuration profiles and restricted software policies to 16 iMac nodes.",
+            "<span class='text-cyan-400'>[NETWORK]</span> VLAN tagging verified across switch cabinets; gigabit throughput stable.",
+            "<span class='text-emerald-400'>[COMPLETE]</span> Fleet deployment successful. All zero-touch enrollment triggers cleared."
+        ]
+    },
+    {
+        id: "proxmox-homelab",
+        title: "10-Inch Proxmox Infrastructure & Service Isolation",
+        category: "Virtualization / Homelab",
+        description: "Engineered a compact, highly structured 10-inch network rack hosting a multi-node Proxmox VE cluster. Configured LXC containerization, strict VLAN segmentation via Nginx reverse proxy routing, and automated off-site backups.",
+        command: "pvesh get /cluster/resources --output-format json",
+        tech: ["Proxmox VE", "LXC Containers", "Nginx", "Docker", "Networking"],
+        metrics: "99.9% Uptime / Multi-VM Isolation",
+        outputJson: [
+            "<span class='text-cyan-400'>[CLUSTER]</span> Querying Proxmox Virtual Environment resource pool...",
+            "<span class='text-slate-300'>[NODE-01]</span> CPU: Intel Core i5-12500T | RAM: 32GB ECC | Load: 0.14",
+            "<span class='text-slate-300'>[CONTAINERS]</span> Active LXC instances: 12 running, 0 failed.",
+            "<span class='text-cyan-400'>[PROXY]</span> Nginx reverse proxy routes verified; SSL/TLS termination active.",
+            "<span class='text-emerald-400'>[HEALTH]</span> Storage pools healthy. ZFS scrub completed with 0 errors."
+        ]
+    },
+    {
+        id: "portfolio-engine",
+        title: "Terminal-Inspired Portfolio & Component Engine",
+        category: "Web Development / Frontend",
+        description: "Designed and built a custom static portfolio from scratch using Astro, Tailwind CSS, and TypeScript. Features an interactive terminal command palette, custom motion cursor states, and fluid scroll-driven velocity typing animations.",
+        command: "astro build && astro preview --port 4321",
+        tech: ["Astro", "Tailwind CSS v4", "TypeScript", "ClientRouter", "Vite"],
+        metrics: "100/100 Lighthouse Performance",
+        outputJson: [
+            "<span class='text-cyan-400'>[ASTRO]</span> Bundling application components and optimizing static assets...",
+            "<span class='text-slate-300'>[TRANSFORM]</span> Tailwind CSS v4 pipeline compiled successfully with zero rule conflicts.",
+            "<span class='text-cyan-400'>[SCRIPTS]</span> Custom cursor tracking and modal event listeners injected.",
+            "<span class='text-emerald-400'>[BUILD]</span> Generation complete! Output directory: /dist (412 KB gzip).",
+            "<span class='text-emerald-400'>[SERVER]</span> Local preview running at http://localhost:4321"
+        ]
+    }
+];
+---
+
+<Layout title="Projects | Alfie Hine">
+    <main class="max-w-7xl mx-auto px-6 pt-4 pb-12 w-full projects-page-container">
+        
+        <!-- HEADER SECTION -->
+        <section class="snap-section min-h-[75vh] flex flex-col justify-center pb-4" data-snap-id="0">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-cyan-400 bg-cyan-950/40 border border-cyan-900/40 px-3 py-1 rounded-full mb-6 w-fit">
+                <span>01</span>
+                <span>/</span>
+                <span>PROJECTS & IMPLEMENTATIONS</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold font-mono tracking-tight text-white mb-6">
+                Systems & Code<span class="text-cyan-400">.</span>
+            </h1>
+            <p class="text-slate-400 text-base md:text-lg max-w-3xl font-light leading-relaxed">
+                A chronological ledger of infrastructure deployments, virtualization setups, and full-stack development initiatives. Each terminal simulation reflects real execution metrics.
+            </p>
+        </section>
+
+        <!-- PROJECTS STACK CONTAINER -->
+        <div class="space-y-8">
+            {projects.map((project, index) => {
+                const isOdd = index % 2 !== 0;
+
+                return (
+                    <section 
+                        class={`snap-section project-item grid grid-cols-1 lg:grid-cols-12 gap-10 items-center min-h-[85vh] py-6`}
+                        data-snap-id={index + 1}
+                        data-index={index}
+                        data-command={project.command}
+                        data-output-json={JSON.stringify(project.outputJson)}
+                    >
+                        <!-- TERMINAL SIMULATOR -->
+                        <div class={`lg:col-span-7 bg-slate-900/90 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl font-mono text-xs ${isOdd ? 'lg:order-2' : 'lg:order-1'}`}>
+                            <!-- Terminal Window Header -->
+                            <div class="bg-slate-950/80 px-5 py-3.5 border-b border-slate-800/80 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                </div>
+                                <div class="text-slate-500 text-[11px] truncate px-2">
+                                    ahine@infra:~/{project.id}
+                                </div>
+                                <div class="text-[10px] text-cyan-400 bg-cyan-950/50 border border-cyan-800/50 px-2.5 py-0.5 rounded">
+                                    bash
+                                </div>
+                            </div>
+
+                            <!-- Terminal Viewport Screen -->
+                            <div class="terminal-screen p-6 h-72 overflow-y-auto space-y-3 bg-[#07080c]/90">
+                                <div class="terminal-content space-y-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- PROJECT SPECIFICATION CARD -->
+                        <div class={`project-info-card lg:col-span-5 bg-slate-900/40 border border-slate-800/60 rounded-2xl p-8 backdrop-blur-sm opacity-0 translate-y-8 transition-all duration-700 ease-out flex flex-col justify-between ${isOdd ? 'lg:order-1' : 'lg:order-2'}`}>
+                            <div>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                                    <span class="text-xs font-mono text-cyan-400 uppercase tracking-widest bg-cyan-950/40 border border-cyan-900/40 px-3 py-1 rounded">
+                                        {project.category}
+                                    </span>
+                                    <span class="text-xs font-mono text-slate-400 font-medium bg-slate-950/60 border border-slate-800/80 px-3 py-1 rounded">
+                                        {project.metrics}
+                                    </span>
+                                </div>
+
+                                <h3 class="text-2xl font-bold font-mono text-white mb-4 tracking-tight">
+                                    {project.title}
+                                </h3>
+
+                                <p class="text-slate-300 text-base font-light leading-relaxed mb-8">
+                                    {project.description}
+                                </p>
+
+                                <div class="flex flex-wrap gap-2">
+                                    {project.tech.map((t) => (
+                                        <span class="text-xs font-mono bg-slate-950 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-md">
+                                            {t}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                );
+            })}
+        </div>
+
+    </main>
+
+    <script is:inline>
+        function initProjectsSnapPage() {
+            const pageContainer = document.querySelector('.projects-page-container');
+            if (!pageContainer) return;
+
+            const sections = document.querySelectorAll('.snap-section');
+            const projectRows = document.querySelectorAll('.project-item');
+            
+            // Add the global layout footer to the snap sections array so it functions as the final snap stop
+            const globalFooter = document.querySelector('footer');
+            const allSnapTargets = globalFooter ? [...sections, globalFooter] : [...sections];
+
+            let currentSectionIndex = 0;
+            let isAnimatingScroll = false;
+            let startedProjects = new Set();
+
+            function runTerminal(index) {
+                if (startedProjects.has(index)) return;
+                
+                const row = projectRows[index];
+                if (!row) return;
+
+                if (row.dataset.initialized === "true") return;
+                row.dataset.initialized = "true";
+                startedProjects.add(index);
+
+                const terminalScreen = row.querySelector('.terminal-screen');
+                const terminalContent = row.querySelector('.terminal-content');
+                const infoCard = row.querySelector('.project-info-card');
+                const fullCmd = row.dataset.command || "";
+                const outputSnippets = JSON.parse(row.dataset.outputJson || "[]");
+
+                terminalContent.innerHTML = "";
+
+                function scrollToBottom() {
+                    if (terminalScreen) terminalScreen.scrollTop = terminalScreen.scrollHeight;
+                }
+
+                const linePrompt = document.createElement('div');
+                linePrompt.className = "flex items-center gap-1.5 flex-wrap pt-1";
+                linePrompt.innerHTML = `<span class="text-cyan-400">ahine@infra</span>:<span class="text-slate-500">~</span>$&nbsp;<span class="cmd-text text-slate-200"></span><span class="cursor animate-pulse text-cyan-400 font-bold">█</span>`;
+                terminalContent.appendChild(linePrompt);
+                scrollToBottom();
+
+                const cmdTextEl = linePrompt.querySelector('.cmd-text');
+                const cursorEl = linePrompt.querySelector('.cursor');
+
+                let i = 0;
+                function typeCommand() {
+                    if (i < fullCmd.length) {
+                        cmdTextEl.textContent += fullCmd.charAt(i);
+                        i++;
+                        scrollToBottom();
+                        setTimeout(typeCommand, 65);
+                    } else {
+                        cursorEl.classList.add('hidden');
+                        setTimeout(() => typeOutputLines(0), 250);
+                    }
+                }
+                setTimeout(typeCommand, 300);
+
+                function typeOutputLines(lineIdx) {
+                    if (lineIdx >= outputSnippets.length) {
+                        if (infoCard) {
+                            infoCard.classList.remove('opacity-0', 'translate-y-8');
+                            infoCard.classList.add('opacity-100', 'translate-y-0');
+                        }
+                        return;
+                    }
+
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = "text-slate-400 pl-2 border-l border-slate-800 text-[11px] leading-relaxed";
+                    terminalContent.appendChild(lineDiv);
+
+                    const rawHTML = outputSnippets[lineIdx];
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = rawHTML;
+                    const plainText = tempDiv.textContent || "";
+                    let charIndex = 0;
+
+                    function typeChar() {
+                        if (charIndex <= plainText.length) {
+                            lineDiv.textContent = plainText.slice(0, charIndex);
+                            charIndex++;
+                            scrollToBottom();
+                            setTimeout(typeChar, 16);
+                        } else {
+                            lineDiv.innerHTML = rawHTML;
+                            setTimeout(() => typeOutputLines(lineIdx + 1), 100);
+                        }
+                    }
+                    typeChar();
+                }
+            }
+
+            runTerminal(0);
+
+            function scrollToSection(index) {
+                if (index < 0 || index >= allSnapTargets.length) return;
+                isAnimatingScroll = true;
+                currentSectionIndex = index;
+
+                const target = allSnapTargets[index];
+                if (target === globalFooter) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                } else {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                if (index >= 1 && index <= 3) {
+                    runTerminal(index - 1);
+                }
+
+                setTimeout(() => {
+                    isAnimatingScroll = false;
+                }, 600);
+            }
+
+            const wheelHandler = (e) => {
+                const hoveredTerminal = e.target.closest('.terminal-screen');
+                if (hoveredTerminal) {
+                    // Let the internal terminal scroll naturally if it has scroll room
+                    const { scrollTop, scrollHeight, clientHeight } = hoveredTerminal;
+                    const isAtTop = scrollTop === 0;
+                    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+                    if ((e.deltaY < 0 && !isAtTop) || (e.deltaY > 0 && !isAtBottom)) {
+                        return; // Allow standard inner terminal scrolling
+                    }
+                }
+
+                e.preventDefault();
+                if (isAnimatingScroll) return;
+
+                if (e.deltaY > 15) {
+                    if (currentSectionIndex < allSnapTargets.length - 1) {
+                        scrollToSection(currentSectionIndex + 1);
+                    }
+                } else if (e.deltaY < -15) {
+                    if (currentSectionIndex > 0) {
+                        scrollToSection(currentSectionIndex - 1);
+                    }
+                }
+            };
+
+            const keyHandler = (e) => {
+                if (['ArrowDown', 'PageDown'].includes(e.key)) {
+                    if (currentSectionIndex < allSnapTargets.length - 1) {
+                        e.preventDefault();
+                        if (!isAnimatingScroll) scrollToSection(currentSectionIndex + 1);
+                    }
+                } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+                    if (currentSectionIndex > 0) {
+                        e.preventDefault();
+                        if (!isAnimatingScroll) scrollToSection(currentSectionIndex - 1);
+                    }
+                }
+            };
+
+            window.addEventListener('wheel', wheelHandler, { passive: false });
+            window.addEventListener('keydown', keyHandler);
+
+            document.addEventListener('astro:before-preparation', () => {
+                window.removeEventListener('wheel', wheelHandler);
+                window.removeEventListener('keydown', keyHandler);
+            }, { once: true });
+        }
+
+        initProjectsSnapPage();
+        document.addEventListener('astro:page-load', initProjectsSnapPage);
+    </script>
+</Layout>

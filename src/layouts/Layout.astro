@@ -3,7 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
 interface Props {
-	title?: string;
+    title?: string;
 }
 
 const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.props;
@@ -11,92 +11,400 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
 
 <!doctype html>
 <html lang="en" class="scroll-smooth bg-[#090a0f] text-slate-100 antialiased selection:bg-cyan-500/30 selection:text-cyan-200 cursor-none">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-		
-		<ClientRouter />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
+        <ClientRouter />
 
-		<!-- Hide default browser cursors everywhere -->
-		<style is:global>
-			*, *::before, *::after, a, button, input, textarea, select {
-				cursor: none !important;
-			}
-		</style>
-	</head>
-	<body class="min-h-screen bg-[#090a0f] text-slate-300 font-sans relative overflow-x-hidden cursor-none">
-		
-		<!-- Custom Cyan Cursor System -->
-		<div id="cursor-dot" class="fixed top-0 left-0 w-2.5 h-2.5 bg-cyan-400 rounded-full pointer-events-none z-[9999] hidden md:block will-change-transform shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-		
-		<!-- High-Visibility Cyan Outer Ring -->
-		<div id="cursor-ring" class="fixed top-0 left-0 w-9 h-9 border border-cyan-400/70 bg-cyan-400/10 rounded-full pointer-events-none z-[9999] hidden md:block will-change-transform transition-transform duration-100 ease-out origin-center backdrop-blur-[0.5px]"></div>
+        <!-- Hide default browser cursors everywhere -->
+        <style is:global>
+            *, *::before, *::after, a, button, input, textarea, select {
+                cursor: none !important;
+            }
+        </style>
+    </head>
+    <body class="min-h-screen bg-[#090a0f] text-slate-300 font-sans relative overflow-x-hidden flex flex-col justify-between cursor-none">
+        
+        <!-- Custom Cyan Cursor System -->
+        <div id="cursor-dot" class="fixed top-0 left-0 w-2.5 h-2.5 bg-cyan-400 rounded-full pointer-events-none z-9999 hidden md:block will-change-transform shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+        <div id="cursor-ring" class="fixed top-0 left-0 w-9 h-9 border border-cyan-400/70 bg-cyan-400/10 rounded-full pointer-events-none z-9999 hidden md:block will-change-transform transition-transform duration-100 ease-out origin-center backdrop-blur-[0.5px]"></div>
 
-		<!-- Background Glow -->
-		<div class="fixed inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-cyan-950/20 via-slate-950/60 to-[#090a0f] -z-10 pointer-events-none"></div>
+        <!-- Background Glow -->
+        <div class="fixed inset-0 bg-[radial-gradient(circle_at_top,var(--tw-gradient-stops))] from-cyan-950/20 via-slate-950/60 to-[#090a0f] -z-10 pointer-events-none"></div>
 
-		<slot />
+        <!-- UNIVERSAL STICKY TOP NAVIGATION -->
+        <nav class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#090a0f]/80 border-b border-slate-800/60 px-6 py-4 transition-all">
+            <div class="max-w-6xl mx-auto flex items-center justify-between">
+                <a href="/" class="text-white font-mono font-bold tracking-tight hover:text-cyan-400 transition">
+                    alfie<span class="text-cyan-400">.</span>hine
+                </a>
 
-		<!-- Custom Cursor Script -->
-		<script>
-			function setupCustomCursor() {
-				const dot = document.getElementById('cursor-dot');
-				const ring = document.getElementById('cursor-ring');
+                <div class="hidden md:flex items-center gap-8 text-sm font-mono">
+                    <a href="/projects" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+                        <span class="text-cyan-400 text-xs">01</span> Projects
+                    </a>
+                    <a href="/work" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+                        <span class="text-cyan-400 text-xs">02</span> Work
+                    </a>
+                    <a href="/about" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
+                        <span class="text-cyan-400 text-xs">03</span> About
+                    </a>
+                </div>
 
-				if (!dot || !ring) return;
+                <div class="flex items-center gap-3">
+                    <button id="search-btn" type="button" onclick="window.toggleModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-mono px-3 py-1.5 rounded-lg border border-slate-800 transition cursor-pointer">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <span>Search</span>
+                        <kbd class="hidden sm:inline bg-slate-950 text-slate-500 px-1.5 py-0.5 rounded text-[10px] border border-slate-800">Ctrl K</kbd>
+                    </button>
+                    
+                    <a href="/cv.pdf" target="_blank" class="hidden sm:inline-block text-xs font-mono text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-lg transition">
+                        CV ↗
+                    </a>
+                    
+                    <a href="mailto:contact@example.com" class="text-xs font-mono bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-3 py-1.5 rounded-lg transition shadow-lg shadow-cyan-500/10">
+                        Get in touch
+                    </a>
+                </div>
+            </div>
+        </nav>
 
-				let mouseX = -100;
-				let mouseY = -100;
-				let ringX = -100;
-				let ringY = -100;
-				let isHovering = false;
+        <!-- PAGE CONTENT SLOT -->
+        <div class="grow">
+            <slot />
+        </div>
 
-				const dotRadius = 5;
-				const ringRadius = 18;
+        <!-- UNIVERSAL FOOTER -->
+        <footer class="border-t border-slate-800/80 bg-[#07080c] pt-12 pb-8 px-6 font-mono text-xs text-slate-400 mt-auto">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-10">
+                    <div>
+                        <h3 class="text-white font-bold text-sm tracking-tight mb-1">
+                            alfie<span class="text-cyan-400">.</span>hine
+                        </h3>
+                        <p class="text-slate-500 font-light">IT Technician & Infrastructure Specialist</p>
+                    </div>
 
-				window.addEventListener('mousemove', (e) => {
-					mouseX = e.clientX;
-					mouseY = e.clientY;
-					
-					dot.style.transform = `translate3d(${mouseX - dotRadius}px, ${mouseY - dotRadius}px, 0)`;
-				});
+                    <div class="flex flex-wrap items-center gap-8">
+                        <div class="flex items-center gap-6">
+                            <a href="/projects" class="hover:text-cyan-400 transition">Projects</a>
+                            <a href="/work" class="hover:text-cyan-400 transition">Work</a>
+                            <a href="/about" class="hover:text-cyan-400 transition">About</a>
+                        </div>
+                        <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
+                        <div class="flex items-center gap-6 text-slate-300">
+                            <a href="https://github.com" target="_blank" class="hover:text-cyan-400 transition">GitHub</a>
+                            <a href="https://linkedin.com" target="_blank" class="hover:text-cyan-400 transition">LinkedIn</a>
+                            <a href="mailto:contact@example.com" class="hover:text-cyan-400 transition">Email</a>
+                        </div>
+                    </div>
+                </div>
 
-				function animateRing() {
-					ringX += (mouseX - ringX) * 0.22;
-					ringY += (mouseY - ringY) * 0.22;
+                <div class="w-full h-px bg-slate-800/60 mb-8"></div>
 
-					const scale = isHovering ? 1.4 : 1.0;
-					ring.style.transform = `translate3d(${ringX - ringRadius}px, ${ringY - ringRadius}px, 0) scale(${scale})`;
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[11px]">
+                    <p>© 2026 Alfie Hine</p>
+                    <p>Designed and built from scratch.</p>
+                </div>
+            </div>
+        </footer>
 
-					requestAnimationFrame(animateRing);
-				}
-				animateRing();
+        <!-- SEARCH MODAL -->
+        <div id="command-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-90 flex items-center justify-center px-4 hidden">
+            <div id="command-modal" class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-xl shadow-2xl overflow-hidden font-mono">
+                <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+                    <span class="text-cyan-400 text-xs shrink-0 font-bold">$</span>
+                    <input 
+                        id="command-input" 
+                        type="text" 
+                        placeholder="Search commands or use ↑ ↓ arrow keys..." 
+                        oninput="window.handleSearchInput()"
+                        class="bg-transparent text-white text-sm focus:outline-none w-full text-center placeholder:text-center caret-transparent"
+                    >
+                    <kbd class="text-[10px] bg-slate-950 text-slate-500 px-2 py-0.5 rounded border border-slate-800 shrink-0">ESC</kbd>
+                </div>
+                
+                <div id="modal-results" class="p-2 text-xs space-y-1">
+                    <!-- Added Home Option -->
+                    <a href="/" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+                        <span>➔ Home </span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </a>
+                    <a href="/projects" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+                        <span>➔ Projects & Implementations</span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </a>
+                    <a href="/work" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+                        <span>➔ Work & Certifications</span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </a>
+                    <a href="/about" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+                        <span>➔ About Me</span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </a>
+                    <a id="download-cv-btn" href="/cv.pdf" target="_blank" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
+                        <span>📄 Download CV (PDF)</span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </a>
+                    
+                    <button id="copy-email-btn" type="button" class="modal-item w-full flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition cursor-pointer">
+                        <span>📧 Copy Email Address</span>
+                        <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-				function attachHoverListeners() {
-					const clickables = document.querySelectorAll('a, button, input, textarea, [role="button"], .interactive-hover');
-					clickables.forEach((el) => {
-						el.addEventListener('mouseenter', () => {
-							isHovering = true;
-						});
+        <!-- FLYIN TOAST CONTAINER -->
+        <div id="flyin-toast" class="fixed bottom-8 left-0 right-0 mx-auto w-fit max-w-[90vw] sm:max-w-md pointer-events-none translate-y-24 opacity-0 transition-all duration-300 ease-out z-95 flex justify-center items-center">
+            <div class="bg-cyan-500 text-slate-950 font-mono text-xs font-bold px-8 py-3 rounded-full shadow-2xl shadow-cyan-500/30 border border-cyan-300 text-center leading-normal wrap-break-word w-full flex items-center justify-center">
+                <span id="toast-message" class="block w-full text-center">Action completed successfully</span>
+            </div>
+        </div>
 
-						el.addEventListener('mouseleave', () => {
-							isHovering = false;
-						});
-					});
-				}
+        <!-- GLOBAL SCRIPTS & MODAL KEYBOARD CONTROLLER -->
+        <script is:inline>
+            window.modalSelectedIndex = -1;
 
-				attachHoverListeners();
-			}
+            window.getModalElements = function() {
+                return {
+                    backdrop: document.getElementById('command-modal-backdrop'),
+                    input: document.getElementById('command-input'),
+                    modalItems: Array.from(document.querySelectorAll('.modal-item'))
+                };
+            };
 
-			setupCustomCursor();
-			document.addEventListener('astro:page-load', setupCustomCursor);
-		</script>
-	</body>
+            window.handleSearchInput = function() {
+                const { input, modalItems } = window.getModalElements();
+                if (!input) return;
+
+                const query = input.value.toLowerCase().trim();
+
+                if (query.length > 0) {
+                    input.classList.remove('caret-transparent');
+                    input.classList.add('caret-cyan-400');
+                } else {
+                    input.classList.remove('caret-cyan-400');
+                    input.classList.add('caret-transparent');
+                }
+
+                modalItems.forEach(item => {
+                    const text = item.textContent?.toLowerCase() || "";
+                    if (text.includes(query)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                window.modalSelectedIndex = -1;
+                window.updateHighlight();
+            };
+
+            window.updateHighlight = function() {
+                const visibleItems = window.getModalElements().modalItems.filter(item => !item.classList.contains('hidden'));
+                
+                window.getModalElements().modalItems.forEach((item) => {
+                    const badge = item.querySelector('.enter-badge');
+                    const index = visibleItems.indexOf(item);
+
+                    if (index === window.modalSelectedIndex && index !== -1) {
+                        item.classList.add('bg-slate-800', 'text-cyan-400', 'border-l-2', 'border-cyan-400');
+                        if (badge) badge.classList.remove('hidden');
+                    } else {
+                        item.classList.remove('bg-slate-800', 'text-cyan-400', 'border-l-2', 'border-cyan-400');
+                        if (badge) badge.classList.add('hidden');
+                    }
+                });
+            };
+
+            window.toggleModal = function() {
+                const { backdrop, input, modalItems } = window.getModalElements();
+                if (!backdrop) return;
+
+                const isHidden = backdrop.classList.contains('hidden');
+                if (isHidden) {
+                    backdrop.classList.remove('hidden');
+                    window.modalSelectedIndex = -1;
+                    modalItems.forEach(item => item.classList.remove('hidden'));
+                    window.updateHighlight();
+                    if (input) {
+                        input.value = '';
+                        window.handleSearchInput();
+                        setTimeout(() => {
+                            input.focus();
+                        }, 50);
+                    }
+                } else {
+                    backdrop.classList.add('hidden');
+                }
+            };
+
+            if (!window.__astroKeydownInitialized) {
+                window.__astroKeydownInitialized = true;
+                window.addEventListener('keydown', (e) => {
+                    const isK = e.key === 'k' || e.key === 'K' || e.code === 'KeyK';
+                    const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+
+                    if (isCtrlOrCmd && isK) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.toggleModal();
+                        return;
+                    }
+
+                    const { backdrop } = window.getModalElements();
+                    const visibleItems = window.getModalElements().modalItems.filter(item => !item.classList.contains('hidden'));
+
+                    if (backdrop && !backdrop.classList.contains('hidden')) {
+                        if (e.key === 'Escape') {
+                            backdrop.classList.add('hidden');
+                            return;
+                        }
+
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            if (visibleItems.length === 0) return;
+                            window.modalSelectedIndex = (window.modalSelectedIndex + 1) % visibleItems.length;
+                            window.updateHighlight();
+                            return;
+                        }
+
+                        if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            if (visibleItems.length === 0) return;
+                            if (window.modalSelectedIndex <= 0) {
+                                window.modalSelectedIndex = visibleItems.length - 1;
+                            } else {
+                                window.modalSelectedIndex--;
+                            }
+                            window.updateHighlight();
+                            return;
+                        }
+
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (window.modalSelectedIndex >= 0 && window.modalSelectedIndex < visibleItems.length) {
+                                const selectedElem = visibleItems[window.modalSelectedIndex];
+                                selectedElem.click();
+                            }
+                            return;
+                        }
+                    }
+                }, true);
+            }
+        </script>
+
+        <!-- Global Interactive Scripts & Custom Cursor -->
+        <script>
+            function initApp() {
+                const backdrop = document.getElementById('command-modal-backdrop');
+                const modalItems = document.querySelectorAll<HTMLElement>('.modal-item');
+                const copyEmailBtn = document.getElementById('copy-email-btn');
+                const downloadCvBtn = document.getElementById('download-cv-btn');
+                
+                const flyinToast = document.getElementById('flyin-toast');
+                const toastMessage = document.getElementById('toast-message');
+
+                let toastTimeout: any = null;
+
+                function showFlyinToast(msg: string) {
+                    if (!flyinToast || !toastMessage) return;
+                    
+                    toastMessage.textContent = msg;
+                    if (toastTimeout) clearTimeout(toastTimeout);
+
+                    flyinToast.classList.remove('translate-y-24', 'opacity-0');
+                    flyinToast.classList.add('translate-y-0', 'opacity-100');
+
+                    toastTimeout = setTimeout(() => {
+                        flyinToast.classList.remove('translate-y-0', 'opacity-100');
+                        flyinToast.classList.add('translate-y-24', 'opacity-0');
+                    }, 3200);
+                }
+
+                backdrop?.addEventListener('click', (e) => {
+                    if (e.target === backdrop) backdrop.classList.add('hidden');
+                });
+
+                copyEmailBtn?.addEventListener('click', () => {
+                    navigator.clipboard.writeText('contact@example.com');
+                    showFlyinToast("Email address copied to clipboard!");
+                    backdrop?.classList.add('hidden');
+                });
+
+                downloadCvBtn?.addEventListener('click', () => {
+                    showFlyinToast("Downloading CV document...");
+                    backdrop?.classList.add('hidden');
+                });
+
+                modalItems.forEach((item, idx) => {
+                    item.addEventListener('mouseenter', () => {
+                        const visibleItems = Array.from(modalItems).filter(i => !i.classList.contains('hidden'));
+                        const visibleIdx = visibleItems.indexOf(item);
+                        if (visibleIdx !== -1) {
+                            (window as any).modalSelectedIndex = visibleIdx;
+                            (window as any).updateHighlight();
+                        }
+                    });
+
+                    // Adjusted boundary check for the added Home link (items index < 4 will auto-close modal on click)
+                    if (idx < 4) {
+                        item.addEventListener('click', () => backdrop?.classList.add('hidden'));
+                    }
+                });
+
+                const dot = document.getElementById('cursor-dot');
+                const ring = document.getElementById('cursor-ring');
+
+                if (dot && ring) {
+                    let mouseX = -100;
+                    let mouseY = -100;
+                    let ringX = -100;
+                    let ringY = -100;
+                    let isHovering = false;
+
+                    const dotRadius = 5;
+                    const ringRadius = 18;
+
+                    const onMouseMove = (e: MouseEvent) => {
+                        mouseX = e.clientX;
+                        mouseY = e.clientY;
+                        dot.style.transform = `translate3d(${mouseX - dotRadius}px, ${mouseY - dotRadius}px, 0)`;
+                    };
+                    window.addEventListener('mousemove', onMouseMove);
+
+                    let animationFrameId: number;
+                    function animateRing() {
+                        ringX += (mouseX - ringX) * 0.22;
+                        ringY += (mouseY - ringY) * 0.22;
+
+                        const scale = isHovering ? 1.4 : 1.0;
+                        if (ring) {
+                            ring.style.transform = `translate3d(${ringX - ringRadius}px, ${ringY - ringRadius}px, 0) scale(${scale})`;
+                        }
+                        animationFrameId = requestAnimationFrame(animateRing);
+                    }
+                    animateRing();
+
+                    const clickables = document.querySelectorAll('a, button, input, textarea, [role="button"], .interactive-hover');
+                    clickables.forEach((el) => {
+                        el.addEventListener('mouseenter', () => { isHovering = true; });
+                        el.addEventListener('mouseleave', () => { isHovering = false; });
+                    });
+                }
+            }
+
+            initApp();
+            document.addEventListener('astro:page-load', initApp);
+        </script>
+    </body>
 </html>

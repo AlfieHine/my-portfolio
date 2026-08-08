@@ -11,9 +11,13 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
 
 let gitVersion = "v0.4.0";
 try {
-    const win = globalThis as unknown as { process?: { env?: Record<string, string | undefined> } };
-    if (win.process && win.process.env) {
-        gitVersion = win.process.env.PUBLIC_GIT_VERSION || "v0.4.0";
+    const _global = globalThis as any;
+    if (_global.process && _global.process.env && _global.process.env.PUBLIC_GIT_VERSION) {
+        gitVersion = _global.process.env.PUBLIC_GIT_VERSION;
+    } else {
+        // @ts-ignore
+        const cp = await import('node:child_process');
+        gitVersion = cp.execSync('git describe --tags --always', { encoding: 'utf-8' }).trim();
     }
 } catch (e) {
     gitVersion = "v0.0.0-dev-unknown";

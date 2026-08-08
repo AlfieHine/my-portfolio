@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { execSync } from 'child_process';
 import '../styles/global.css';
 
 interface Props {
@@ -7,6 +8,18 @@ interface Props {
 }
 
 const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.props;
+
+let gitVersion = process.env.PUBLIC_GIT_VERSION;
+if (!gitVersion) {
+    try {
+        gitVersion = execSync('git describe --tags --always --dirty').toString().trim();
+    } catch (e) {
+        gitVersion = "v0.0.0-dev-unknown";
+    }
+}
+
+// If you want it to look completely clean without any prefix:
+const displayVersion = gitVersion === "dev" ? "dev" : gitVersion;
 ---
 
 <!doctype html>
@@ -43,10 +56,24 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
         <!-- UNIVERSAL STICKY TOP NAVIGATION -->
         <nav class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#090a0f]/80 border-b border-slate-800/60 px-6 py-4 transition-all">
             <div class="max-w-6xl mx-auto flex items-center justify-between">
-                <a href="/" class="text-white font-mono font-bold tracking-tight hover:text-cyan-400 transition">
-                    alfie<span class="text-cyan-400">.</span>hine
-                </a>
+                
+                <!-- LEFT SIDE: Logo on Desktop, Hamburger + Logo on Mobile -->
+                <div class="flex items-center gap-4">
+                    <!-- Mobile Hamburger Toggle Button -->
+                    <button id="mobile-menu-btn" type="button" onclick="window.toggleMobileMenu()" class="md:hidden relative flex items-center justify-center w-9 h-9 bg-slate-900 text-cyan-400 border border-slate-800 rounded-lg transition cursor-pointer group">
+                        <div class="w-5 h-4 flex flex-col justify-between relative">
+                            <span class="hamburger-line-1 w-full h-0.5 bg-cyan-400 rounded-full transition-all duration-300 origin-center"></span>
+                            <span class="hamburger-line-2 w-full h-0.5 bg-cyan-400 rounded-full transition-all duration-300"></span>
+                            <span class="hamburger-line-3 w-full h-0.5 bg-cyan-400 rounded-full transition-all duration-300 origin-center"></span>
+                        </div>
+                    </button>
 
+                    <a href="/" class="text-white font-mono font-bold tracking-tight hover:text-cyan-400 transition">
+                        alfie<span class="text-cyan-400">.</span>hine
+                    </a>
+                </div>
+
+                <!-- DESKTOP NAV LINKS -->
                 <div class="hidden md:flex items-center gap-8 text-sm font-mono">
                     <a href="/projects" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5">
                         <span class="text-cyan-400 text-xs">01</span> Projects
@@ -59,8 +86,9 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                     </a>
                 </div>
 
+                <!-- RIGHT ACTIONS: Search (Desktop only) + CV & Touch -->
                 <div class="flex items-center gap-3">
-                    <button id="search-btn" type="button" onclick="window.toggleModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-mono px-3 py-1.5 rounded-lg border border-slate-800 transition cursor-pointer">
+                    <button id="search-btn" type="button" onclick="window.toggleModal()" class="hidden md:flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-mono px-3 py-1.5 rounded-lg border border-slate-800 transition cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         <span>Search</span>
                         <kbd class="hidden sm:inline bg-slate-950 text-slate-500 px-1.5 py-0.5 rounded text-[10px] border border-slate-800">Ctrl K</kbd>
@@ -77,13 +105,69 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
             </div>
         </nav>
 
+        <!-- MOBILE SLIDE-OUT LEFT DRAWER NAVIGATION -->
+        <div id="mobile-menu-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none md:hidden">
+            
+            <!-- Floating Close X Button starting tucked inside the menu border, emerging rightward with a delayed transition -->
+            <button type="button" onclick="window.toggleMobileMenu()" id="drawer-floating-x" class="absolute top-4 left-[86%] sm:left-[345px] -translate-x-[140%] w-11 h-11 bg-[#07080c] text-cyan-400 border border-slate-800 border-l-transparent rounded-r-lg shadow-2xl flex items-center justify-center font-bold text-lg z-50 transition-all duration-300 ease-out opacity-0 pointer-events-none cursor-pointer hover:bg-slate-900 hover:border-slate-700 hover:border-l-transparent">
+                ✕
+            </button>
+
+            <div id="mobile-drawer" class="absolute top-0 left-0 bottom-0 w-[82%] max-w-sm bg-[#07080c] border-r border-slate-800 p-6 flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out shadow-2xl overflow-y-auto">
+                
+                <!-- Drawer Header -->
+                <div>
+                    <div class="flex items-center justify-between pb-6 border-b border-slate-800/80 mb-6">
+                        <span class="font-mono text-xs text-cyan-400 uppercase tracking-wider">Navigation Menu</span>
+                        <span class="text-[10px] font-mono text-slate-500 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">{displayVersion}</span>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="flex flex-col gap-3 font-mono text-sm">
+                        <a href="/" class="mobile-nav-link flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800/60 text-slate-200 hover:text-cyan-400 hover:border-cyan-900/40 transition">
+                            <span>Home</span>
+                            <span class="text-xs text-slate-600">→</span>
+                        </a>
+                        <a href="/projects" class="mobile-nav-link flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800/60 text-slate-200 hover:text-cyan-400 hover:border-cyan-900/40 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 text-xs">01</span> Projects</span>
+                            <span class="text-xs text-slate-600">→</span>
+                        </a>
+                        <a href="/work" class="mobile-nav-link flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800/60 text-slate-200 hover:text-cyan-400 hover:border-cyan-900/40 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 text-xs">02</span> Work</span>
+                            <span class="text-xs text-slate-600">→</span>
+                        </a>
+                        <a href="/about" class="mobile-nav-link flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800/60 text-slate-200 hover:text-cyan-400 hover:border-cyan-900/40 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 text-xs">03</span> About</span>
+                            <span class="text-xs text-slate-600">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Drawer Actions (CV, Copy Email, Get in touch) -->
+                <div class="pt-6 border-t border-slate-800/80 flex flex-col gap-3 font-mono text-xs">
+                    <a href="/cv.pdf" target="_blank" id="mobile-download-cv" class="w-full text-center text-slate-300 border border-slate-800 py-3 rounded-lg bg-slate-900/50 hover:bg-slate-900 transition flex items-center justify-center gap-2">
+                        <span>Download CV (PDF)</span>
+                        <span class="text-cyan-400">↗</span>
+                    </a>
+                    <button type="button" id="mobile-copy-email" class="w-full text-center text-slate-300 border border-slate-800 py-3 rounded-lg bg-slate-900/50 hover:bg-slate-900 transition flex items-center justify-center gap-2 cursor-pointer">
+                        <span>Copy Email Address</span>
+                        <span class="text-cyan-400">@</span>
+                    </button>
+                    <a href="mailto:contact@example.com" class="w-full text-center bg-cyan-500 text-slate-950 font-semibold py-3 rounded-lg hover:bg-cyan-400 transition shadow-lg shadow-cyan-500/10">
+                        Get in touch
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
         <!-- PAGE CONTENT SLOT -->
         <div class="grow">
             <slot />
         </div>
 
         <!-- UNIVERSAL FOOTER -->
-        <footer class="border-t border-slate-800/80 bg-[#07080c] pt-12 pb-8 px-6 font-mono text-xs text-slate-400 mt-auto">
+        <footer class="snap-section border-t border-slate-800/80 bg-[#07080c] pt-12 pb-8 px-6 font-mono text-xs text-slate-400 mt-auto">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-10">
                     <div>
@@ -111,7 +195,11 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                 <div class="w-full h-px bg-slate-800/60 mb-8"></div>
 
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[11px]">
-                    <p>© 2026 Alfie Hine</p>
+                    <div class="flex items-center gap-3">
+                        <p>© 2026 Alfie Hine</p>
+                        <span class="text-slate-700">•</span>
+                        <span class="font-mono text-[10px] text-slate-500 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">{displayVersion}</span>
+                    </div>
                     <p>Designed and built from scratch.</p>
                 </div>
             </div>
@@ -133,7 +221,6 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                 </div>
                 
                 <div id="modal-results" class="p-2 text-xs space-y-1">
-                    <!-- Added Home Option -->
                     <a href="/" class="modal-item flex items-center justify-between px-3 py-2 rounded text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition">
                         <span>➔ Home </span>
                         <span class="enter-badge text-[10px] text-cyan-400 font-mono hidden">(Press Enter ↵)</span>
@@ -170,7 +257,7 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
             </div>
         </div>
 
-        <!-- GLOBAL SCRIPTS & MODAL KEYBOARD CONTROLLER -->
+        <!-- GLOBAL SCRIPTS & MODAL/MOBILE MENU CONTROLLERS -->
         <script is:inline>
             window.modalSelectedIndex = -1;
 
@@ -180,6 +267,38 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                     input: document.getElementById('command-input'),
                     modalItems: Array.from(document.querySelectorAll('.modal-item'))
                 };
+            };
+
+            window.toggleMobileMenu = function() {
+                const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+                const mobileDrawer = document.getElementById('mobile-drawer');
+                const floatingX = document.getElementById('drawer-floating-x');
+                const btn = document.getElementById('mobile-menu-btn');
+                if (!mobileBackdrop || !mobileDrawer) return;
+
+                const isOpen = !mobileBackdrop.classList.contains('opacity-0');
+
+                if (isOpen) {
+                    mobileBackdrop.classList.remove('opacity-100');
+                    mobileBackdrop.classList.add('opacity-0', 'pointer-events-none');
+                    mobileDrawer.classList.remove('translate-x-0');
+                    mobileDrawer.classList.add('-translate-x-full');
+                    if (floatingX) {
+                        floatingX.classList.remove('-translate-x-1/2', 'opacity-100', 'delay-150');
+                        floatingX.classList.add('-translate-x-[140%]', 'opacity-0', 'pointer-events-none');
+                    }
+                    if (btn) btn.classList.remove('menu-open');
+                } else {
+                    mobileBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+                    mobileBackdrop.classList.add('opacity-100');
+                    mobileDrawer.classList.remove('-translate-x-full');
+                    mobileDrawer.classList.add('translate-x-0');
+                    if (floatingX) {
+                        floatingX.classList.remove('-translate-x-[140%]', 'opacity-0', 'pointer-events-none');
+                        floatingX.classList.add('-translate-x-1/2', 'opacity-100', 'delay-150');
+                    }
+                    if (btn) btn.classList.add('menu-open');
+                }
             };
 
             window.handleSearchInput = function() {
@@ -262,7 +381,15 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                     }
 
                     const { backdrop } = window.getModalElements();
+                    const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
                     const visibleItems = window.getModalElements().modalItems.filter(item => !item.classList.contains('hidden'));
+
+                    if (e.key === 'Escape') {
+                        if (mobileBackdrop && !mobileBackdrop.classList.contains('opacity-0')) {
+                            window.toggleMobileMenu();
+                            return;
+                        }
+                    }
 
                     if (backdrop && !backdrop.classList.contains('hidden')) {
                         if (e.key === 'Escape') {
@@ -303,13 +430,32 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
             }
         </script>
 
+        <!-- Inline CSS for Hamburger to X Animation Morph -->
+        <style>
+            #mobile-menu-btn.menu-open .hamburger-line-1 {
+                transform: translateY(7px) rotate(45deg);
+            }
+            #mobile-menu-btn.menu-open .hamburger-line-2 {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            #mobile-menu-btn.menu-open .hamburger-line-3 {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        </style>
+
         <!-- Global Interactive Scripts & Custom Cursor -->
         <script>
             function initApp() {
                 const backdrop = document.getElementById('command-modal-backdrop');
+                const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
                 const modalItems = document.querySelectorAll<HTMLElement>('.modal-item');
+                const mobileNavLinks = document.querySelectorAll<HTMLElement>('.mobile-nav-link');
                 const copyEmailBtn = document.getElementById('copy-email-btn');
                 const downloadCvBtn = document.getElementById('download-cv-btn');
+                
+                const mobileCopyEmail = document.getElementById('mobile-copy-email');
+                const mobileDownloadCv = document.getElementById('mobile-download-cv');
                 
                 const flyinToast = document.getElementById('flyin-toast');
                 const toastMessage = document.getElementById('toast-message');
@@ -335,16 +481,40 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                     if (e.target === backdrop) backdrop.classList.add('hidden');
                 });
 
-                copyEmailBtn?.addEventListener('click', () => {
+                mobileBackdrop?.addEventListener('click', (e) => {
+                    if (e.target === mobileBackdrop) {
+                        (window as any).toggleMobileMenu();
+                    }
+                });
+
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        (window as any).toggleMobileMenu();
+                    });
+                });
+
+                const handleCopyEmail = () => {
                     navigator.clipboard.writeText('contact@example.com');
                     showFlyinToast("Email address copied to clipboard!");
                     backdrop?.classList.add('hidden');
-                });
+                    if (mobileBackdrop && !mobileBackdrop.classList.contains('opacity-0')) {
+                        (window as any).toggleMobileMenu();
+                    }
+                };
 
-                downloadCvBtn?.addEventListener('click', () => {
+                const handleDownloadCv = () => {
                     showFlyinToast("Downloading CV document...");
                     backdrop?.classList.add('hidden');
-                });
+                    if (mobileBackdrop && !mobileBackdrop.classList.contains('opacity-0')) {
+                        (window as any).toggleMobileMenu();
+                    }
+                };
+
+                copyEmailBtn?.addEventListener('click', handleCopyEmail);
+                mobileCopyEmail?.addEventListener('click', handleCopyEmail);
+
+                downloadCvBtn?.addEventListener('click', handleDownloadCv);
+                mobileDownloadCv?.addEventListener('click', handleDownloadCv);
 
                 modalItems.forEach((item, idx) => {
                     item.addEventListener('mouseenter', () => {
@@ -356,7 +526,6 @@ const { title = "Alfie Hine | IT Infrastructure & Systems Specialist" } = Astro.
                         }
                     });
 
-                    // Adjusted boundary check for the added Home link (items index < 4 will auto-close modal on click)
                     if (idx < 4) {
                         item.addEventListener('click', () => backdrop?.classList.add('hidden'));
                     }

@@ -11,10 +11,10 @@ export interface Experience {
 
 export const experiences: Experience[] = [
     {
-        role: "IT Infrastructure and Systems Specialist",
-        company: "UK Public Education Sector",
+        role: "Level 1 IT Technician",
+        company: "Bucklers Mead",
         period: "2024 - Present",
-        location: "United Kingdom",
+        location: "Yeovil, United Kingdom",
         type: "Hybrid",
         summary: "Managing core infrastructure, endpoint deployment pipelines, and administrative workflows across public school systems.",
         isCurrent: true,

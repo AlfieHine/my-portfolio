@@ -4,5 +4,5 @@ export const contactInfo = {
   github: "https://github.com/AlfieHine",
   linkedin: "https://linkedin.com",
   cvUrl: "/cv.pdf",
-  role: "IT Technician & Infrastructure Specialist",
+  role: "Level 1 IT Technician",
 };

@@ -15,7 +15,7 @@ export const aboutData: AboutInfo = {
     name: "Alfie Hine",
     imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     basedIn: "United Kingdom",
-    currentlyStudying: "Computer Science",
+    currentlyStudying: "Microsft Azure Fundamentals (AZ-900)",
     skillFocus: "Full-stack, Cloud, & Systems Infrastructure",
     headline: "IT Infrastructure & Systems Specialist focused on dependable networks and clean automation.",
     bio: [

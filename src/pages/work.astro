@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { experiences } from '../data/work';
+import { education } from '../data/education';
+import { certifications } from '../data/certifications';
+---
+
+<Layout title="Work - Alfie Hine">
+    <main class="antialiased min-h-screen p-8 md:p-16 max-w-5xl mx-auto flex flex-col gap-16">
+
+        <!-- Hero Section -->
+        <header class="max-w-2xl">
+            <!-- PILL HEADER -->
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-cyan-400 bg-cyan-950/40 border border-cyan-900/40 px-3 py-1 rounded-full mb-4 w-fit">
+                <span>02</span>
+                <span>/</span>
+                <span>EXPERIENCE & EDUCATION</span>
+            </div>
+            <div class="section-label">Experience</div>
+            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-slate-100">
+                Optimising systems, and mainting them under the hood.
+            </h1>
+            <p class="text-slate-400 text-base">
+                A few years spread across IT infrastructure, systems engineering, and core network reliability.
+            </p>
+        </header>
+
+        <!-- Experience List -->
+        <section class="group flex flex-col gap-2">
+            {experiences.map((job) => (
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 md:gap-8 p-6 -mx-6 rounded-xl transition-all duration-300 ease-out group-hover:opacity-30 hover:opacity-100! hover:-translate-y-1 hover:scale-[1.01] hover:bg-slate-800/40 cursor-default border-b border-slate-800 hover:border-transparent">
+                    <div class="font-mono text-xs text-slate-400 flex flex-col gap-1 mt-1">
+                        <div class="flex items-center gap-2">
+                            {job.isCurrent && (
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"></span>
+                            )}
+                            {job.period}
+                        </div>
+                        <div class="uppercase text-slate-500">{job.location}<br>{job.type}</div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-lg font-semibold text-slate-100">
+                            {job.role} <span class="text-slate-500 font-normal">· {job.company}</span>
+                        </h3>
+                        <p class="text-slate-400 text-sm">{job.summary}</p>
+                        <ul class="bullet-list">
+                            {job.bullets.map((bullet) => (
+                                <li>{bullet}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            ))}
+        </section>
+
+        <!-- Education & Certifications Split Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 border-t border-slate-800 pt-12 mt-2">
+            
+            <!-- Education Column -->
+            <div>
+                <div class="section-label">Education</div>
+                <h3 class="text-lg font-semibold text-slate-100 mb-1">{education.degree}</h3>
+                <p class="font-mono text-xs text-slate-500 mb-4">
+                    {education.institution} · {education.period} · {education.location}
+                </p>
+                <ul class="bullet-list">
+                    {education.highlights.map((highlight) => (
+                        <li>{highlight}</li>
+                    ))}
+                </ul>
+            </div>
+
+            <!-- Certifications Column -->
+            <div>
+                <div class="section-label">Certifications</div>
+                <div class="flex flex-col border-t border-slate-800">
+                    {certifications.map((cert) => (
+                        <div class="flex items-center justify-between py-3 border-b border-slate-800 text-sm group cursor-pointer">
+                            <div>
+                                <span class="font-medium text-slate-100 group-hover:text-cyan-400 transition-colors">{cert.name}</span> 
+                                <span class="text-slate-500 font-normal">· {cert.issuer}</span>
+                            </div>
+                            <span class="font-mono text-xs text-slate-500">{cert.year} <span class="text-cyan-400">↗</span></span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+</Layout>

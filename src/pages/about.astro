@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { aboutData } from '../data/about';
+import { experiences } from '../data/work';
+
+// Pull the current job dynamically from work.ts
+const currentWork = experiences.find(e => e.isCurrent) || experiences[0];
+---
+
+<Layout title="About - Alfie Hine">
+    <main class="min-h-screen p-6 md:p-16 lg:px-32 max-w-7xl mx-auto flex flex-col gap-24">
+
+        <!-- Main About Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            
+            <!-- Left Column: Image & Meta Data -->
+            <div class="lg:col-span-4 flex flex-col gap-8">
+                <!-- PILL HEADER -->
+                <div class="inline-flex items-center gap-2 font-mono text-xs text-cyan-400 bg-cyan-950/40 border border-cyan-900/40 px-3 py-1 rounded-full mb-4 w-fit">
+                    <span>03</span>
+                    <span>/</span>
+                    <span>BIO & CORE COMPETENCIES</span>
+                </div>
+                
+                <!-- Section Label -->
+                <div class="section-label mb-2">About</div>
+                
+                <!-- Image with subtle glow -->
+                <div class="relative w-full aspect-3/4 rounded-lg overflow-hidden border border-slate-800 shadow-[0_0_40px_rgba(34,211,238,0.15)]">
+                    <img src={aboutData.imageUrl} alt={aboutData.name} class="w-full h-full object-cover grayscale-20">
+                </div>
+
+                <!-- Meta Data Grid -->
+                <div class="grid grid-cols-3 gap-y-4 gap-x-2 text-xs font-mono text-slate-400 border-t border-slate-800 pt-6">
+                    <div class="text-slate-300 uppercase">Based In</div>
+                    <div class="col-span-2 text-right">{aboutData.basedIn}</div>
+                    
+                    <div class="text-slate-300 uppercase">Currently</div>
+                    <div class="col-span-2 text-right">
+                        {currentWork.role}<br>at {currentWork.company}
+                    </div>
+                    
+                    <div class="text-slate-300 uppercase">Studying</div>
+                    <div class="col-span-2 text-right">{aboutData.currentlyStudying}</div>
+                    
+                    <div class="text-slate-300 uppercase">Focus</div>
+                    <div class="col-span-2 text-right">{aboutData.skillFocus}</div>
+                </div>
+            </div>
+
+            <!-- Right Column: Text Content -->
+            <div class="lg:col-span-8 flex flex-col gap-6 lg:mt-12">
+                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1] mb-4 text-white">
+                    {aboutData.headline}
+                </h1>
+
+                <div class="text-slate-400 leading-relaxed space-y-6">
+                    {aboutData.bio.map((paragraph) => (
+                        <p>{paragraph}</p>
+                    ))}
+                    <p>{aboutData.philosophy}</p>
+                </div>
+
+                <!-- Core Competencies Section -->
+                <div class="mt-8">
+                    <div class="section-label cyan mb-6">Core Competencies</div>
+                    <ul class="bullet-list">
+                        {aboutData.coreCompetencies.map((item) => (
+                            <li>{item}</li>
+                        ))}
+                    </ul>
+                </div>
+
+                <!-- Personal Interests Section -->
+                <div class="mt-8">
+                    <div class="section-label cyan mb-6">Personal Interests</div>
+                    <ul class="bullet-list">
+                        {aboutData.personalInterests.map((item) => (
+                            <li>{item}</li>
+                        ))}
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+    </main>
+</Layout>

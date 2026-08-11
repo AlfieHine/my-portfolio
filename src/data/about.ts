@@ -13,28 +13,28 @@ export interface AboutInfo {
 
 export const aboutData: AboutInfo = {
     name: "Alfie Hine",
-    imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    basedIn: "United Kingdom",
-    currentlyStudying: "Microsft Azure Fundamentals (AZ-900)",
-    skillFocus: "Full-stack, Cloud, & Systems Infrastructure",
-    headline: "IT Infrastructure & Systems Specialist focused on dependable networks and clean automation.",
+    imageUrl: "src/assets/about_pfp.JPEG",
+    basedIn: "Somerset, United Kingdom",
+    currentlyStudying: "Microsoft Azure Fundamentals (AZ-900)",
+    skillFocus: "Systems Infrastructure & Automation",
+    headline: "IT Technician building reliable networks, homelabs, and web automations.",
     bio: [
-        "I'm a 20-year-old IT Technician working in the UK public education sector. My day-to-day work revolves around maintaining school IT infrastructure, deploying virtualised server environments, and building automated workflows that simplify administrative overhead.",
-        "Beyond hardware and enterprise networking, I have a strong passion for software engineering—building clean, high-performance web applications using modern frameworks like Astro, TypeScript, and Tailwind CSS.",
-        "When I'm not configuring server clusters or troubleshooting network routes, you'll usually find me outdoors wild camping and multi-day trail backpacking across places like Dartmoor and Snowdonia."
+        "I'm a 20-year-old IT Technician based in the UK. Day-to-day, I maintain networks, manage virtual servers, and write scripts to automate repetitive admin tasks.",
+        "Outside of sysadmin work, I build clean, fast web applications using Astro, TypeScript, and Tailwind CSS. As well as maintaining my own homelab with Proxmox VE, hosting multiple virtual machines and containers for personal projects.",
+        "When I'm not tweaking server configs or diagnosing network drops, you'll usually find me wild camping or hiking across Dartmoor and Eryri (Snowdonia)."
     ],
-    philosophy: "Systems should be straightforward, robust, and well-documented. Whether it's a physical network stack or web architecture, clear design always wins over over-engineered complexity.",
+    philosophy: "I believe IT systems should be simple, well-documented, and dependable. Good design always beats over-complicated setups.",
     coreCompetencies: [
-        "School IT Infrastructure & Fleet Management",
+        "IT Infrastructure & Fleet Management",
         "Proxmox VE Hypervisors & Containerisation (LXC/KVM)",
-        "Google Workspace Administration & Scripted Provisioning",
+        "Google Workspace Admin & Account Automation",
         "ZFS Storage Pool Configuration & Data Recovery",
         "Linux Server Administration (Debian / Ubuntu)",
         "Static Web Architecture (Astro, TypeScript, Tailwind CSS)"
     ],
     personalInterests: [
         "Multi-day Backpacking & Wild Camping",
-        "Custom Small-Form-Factor (SFF) Hardware Builds",
+        "CAD Modelling & 3D Printing",
         "Automated Home Lab Infrastructure",
         "Tactical & Strategy Gaming"
     ]

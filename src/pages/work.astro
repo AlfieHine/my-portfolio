@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { experiences } from '../data/work';
 import { education } from '../data/education';
-import { certifications } from '../data/certifications';
+import { certifications } from '../data/certificates';
 ---
 
 <Layout title="Work | Alfie Hine">
@@ -18,10 +18,10 @@ import { certifications } from '../data/certifications';
             </div>
             <div class="section-label">Experience</div>
             <h1 class="text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1] mb-6 text-slate-100">
-                Optimising systems, and mainting them under the hood.
+                Keeping networks fast and systems reliable.
             </h1>
             <p class="text-slate-400 text-base">
-                A few years spread across IT infrastructure, systems engineering, and core network reliability.
+                My experience across school IT support, system administration, and network maintenance.
             </p>
         </header>
 
@@ -73,7 +73,7 @@ import { certifications } from '../data/certifications';
 
             <!-- Certifications Column -->
             <div>
-                <div class="section-label">Certifications</div>
+                <div class="section-label">Certificates</div>
                 <div class="flex flex-col border-t border-slate-800">
                     {certifications.map((cert) => (
                         <div class="flex items-center justify-between py-3 border-b border-slate-800 text-sm group cursor-pointer">

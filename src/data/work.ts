@@ -11,28 +11,31 @@ export interface Experience {
 
 export const experiences: Experience[] = [
     {
-        role: "Level 1 IT Technician",
-        company: "Bucklers Mead",
+        role: "Level 1 IT Support Technician",
+        company: "Bucklers Mead School",
         period: "2024 - Present",
         location: "Yeovil, United Kingdom",
-        type: "Hybrid",
-        summary: "Managing core infrastructure, endpoint deployment pipelines, and administrative workflows across public school systems.",
+        type: "On Site",
+        summary: "Managing everyday school IT support, server infrastructure, user accounts, and hardware setups across campus.",
         isCurrent: true,
         bullets: [
-            "Managing core infrastructure, maintaining endpoint deployment pipelines, and administering user permissions, security policies, and device enrollment for staff and students.",
-            "Focused on virtualization and network health, including ZFS pool configuration and Nginx reverse proxy management."
+            "Managing Google Workspace accounts, user permissions, and software rollouts for staff and students.",
+            "Maintaining Proxmox hypervisors, ZFS storage pools, and Nginx reverse proxies for internal school services.",
+            "Handling day-to-day tickets, hardware fixes, and physical network cabling across classrooms."
         ]
     },
     {
-        role: "IT Technician",
-        company: "School Technical Services",
-        period: "2022 - 2024",
-        location: "United Kingdom",
+        role: "Technical Solutions Placement",
+        company: "Somerset Council",
+        period: "2021 - 6 Weeks",
+        location: "Taunton, Somerset",
         type: "On Site",
-        summary: "Executed hardware upgrades, component-level diagnostics, and preventative maintenance for student and staff workstations.",
+        summary: "Completed a 6-week placement within the Somerset Council, contributing heavily to the creation of a chatbot to aid users in navigating the council's vast handbook of general day-to-day FAQ's.",
         isCurrent: false,
         bullets: [
-            "Executed hardware upgrades, performed component-level diagnostics, and managed preventative maintenance for student and staff workstations."
+            "Setup keyword rules to pick up on what the user is asking, and then route them to the correct answer.",
+            "Converted council policy documents into structured Q&A routes for an FAQ chatbot.",
+            "Tested and tweaked the chatbot's responses to make sure users got accurate, plain-English answers."
         ]
     }
 ];

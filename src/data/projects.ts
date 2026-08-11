@@ -13,75 +13,75 @@ export interface Project {
 
 export const projects: Project[] = [
     {
-        id: "workspace-automations",
-        title: "Bespoke Workspace Escalation & Laptop Tracker",
-        category: "Automations",
-        tag: "Google Ecosystem",
-        shortDescription: "Architected two custom, automated workflows within strict Google Workspace boundaries: a high-priority teacher help request system to upper management, and an end-to-end laptop loaning and asset tracking engine now daily used by staff.",
-        description: "Architected two custom, automated workflows within strict Google Workspace boundaries: a high-priority teacher help request system to upper management, and an end-to-end laptop loaning and asset tracking engine now daily used by staff.",
-        command: "clasp push && google-apps-script trigger run",
-        tech: ["Google Apps Script", "Automated Workflows", "Education IT"],
-        metrics: "2 Workflows / Active Daily Use",
+        id: "portfolio-website",
+        title: "Terminal-Style Portfolio Website",
+        category: "Web Development",
+        tag: "Astro / Tailwind v4",
+        shortDescription: "Built a fast, static portfolio website from scratch using Astro, Tailwind CSS, and TypeScript with an interactive terminal preview.",
+        description: "Built a fast static portfolio website from scratch using Astro, Tailwind CSS v4, and TypeScript. Includes an interactive terminal UI, custom motion states, and clean page routing.",
+        command: "astro build && astro preview --port 4321",
+        tech: ["Astro", "Tailwind CSS v4", "TypeScript", "Vite"],
+        metrics: "100/100 Lighthouse Performance",
         outputJson: [
-            "<span class='text-cyan-400'>[GAS]</span> Connecting to Google Apps Script container bindings...",
-            "<span class='text-emerald-400'>[SUCCESS]</span> Script deployment synchronized with Workspace environment.",
-            "<span class='text-slate-300'>[TRIGGER]</span> High-priority escalation webhooks active for senior leadership.",
-            "<span class='text-cyan-400'>[ASSETS]</span> Laptop loan tracking ledger initialized; database synched.",
-            "<span class='text-emerald-400'>[COMPLETE]</span> All automated background triggers operational."
+            "<span class='text-cyan-400'>[ASTRO]</span> Bundling application components and static assets...",
+            "<span class='text-slate-300'>[TRANSFORM]</span> Tailwind CSS v4 pipeline compiled with zero errors.",
+            "<span class='text-cyan-400'>[SCRIPTS]</span> Terminal event listeners and route handlers active.",
+            "<span class='text-emerald-400'>[BUILD]</span> Build complete! Output directory: /dist (412 KB gzip).",
+            "<span class='text-emerald-400'>[SERVER] Local preview running at http://localhost:4321</span>"
+        ]
+    },
+    {
+        id: "jamf-imac-rebuild",
+        title: "iMac Suite Modernisation & Switch Cleanup",
+        category: "macOS Management & Networking",
+        tag: "Jamf Pro / Ruckus",
+        shortDescription: "Factory reset 16 classroom iMacs, rebuilt enrollment policies in Jamf Pro, and re-cabled the network switch cabinet.",
+        description: "Factory reset 16 classroom iMacs and streamlined their deployment pipeline using Jamf Pro MDM. Removed old, broken profiles and rewritten scripts to keep device management simple and reliable. Tore down the physical network switch cabinet and re-cabled it for easier long-term maintenance.",
+        command: "jamf policy -event deploy-imac-suite --verify-vlan",
+        tech: ["Jamf Pro MDM", "Ruckus vSZ", "VLAN Configuration", "Physical Cabling", "Bash"],
+        metrics: "16 Devices / Cleaned Configs",
+        outputJson: [
+            "<span class='text-cyan-400'>[INFO]</span> Connecting to Jamf Pro MDM controller...",
+            "<span class='text-emerald-400'>[SUCCESS]</span> Authentication complete. Connection verified.",
+            "<span class='text-slate-300'>[DEPLOY]</span> Applying streamlined configuration profiles to 16 iMacs.",
+            "<span class='text-cyan-400'>[NETWORK]</span> Switch cabinet VLAN configuration verified; 1Gbps link active.",
+            "<span class='text-emerald-400'>[COMPLETE]</span> Suite modernised successfully."
         ]
     },
     {
         id: "proxmox-homelab",
-        title: "Monitored Self-Hosted Infrastructure Stack",
-        category: "Homelab / Security",
+        title: "Proxmox & Docker Self-Hosted Homelab",
+        category: "Homelab & Systems",
         tag: "Proxmox / Docker",
-        shortDescription: "Configured an isolated container host stack running web services, Nginx reverse proxy with automated SSL renewal, network security tunneling, and continuous uptime monitoring for hosted applications.",
-        description: "Configured an isolated container host stack running web services, Nginx reverse proxy with automated SSL renewal, network security tunneling, and continuous uptime monitoring for hosted applications. Engineered a compact, highly structured 10-inch network rack hosting a multi-node Proxmox VE cluster with strict VLAN segmentation.",
+        shortDescription: "Built a self-hosted server running Proxmox VE and Docker to host personal services and practice enterprise virtualization.",
+        description: "Built a home lab server running Proxmox VE to host personal projects and self-teach system administration. Configured LXC Linux containers, Docker app deployments, Nginx reverse proxy routes, and automated SSL certificate renewals.",
         command: "pvesh get /cluster/resources --output-format json",
-        tech: ["Proxmox VE", "Nginx / Reverse Proxy", "Docker"],
-        metrics: "99.9% Uptime / Multi-VM Isolation",
+        tech: ["Proxmox VE", "Docker", "LXC Containers", "Nginx", "Linux"],
+        metrics: "Proxmox VE / Multi-Container Host",
         outputJson: [
-            "<span class='text-cyan-400'>[CLUSTER]</span> Querying Proxmox Virtual Environment resource pool...",
-            "<span class='text-slate-300'>[NODE-01]</span> CPU: Intel Core i5-12500T | RAM: 32GB ECC | Load: 0.14",
-            "<span class='text-slate-300'>[CONTAINERS]</span> Active LXC instances: 12 running, 0 failed.",
-            "<span class='text-cyan-400'>[PROXY]</span> Nginx reverse proxy routes verified; SSL/TLS termination active.",
-            "<span class='text-emerald-400'>[HEALTH]</span> Storage pools healthy. ZFS scrub completed with 0 errors."
+            "<span class='text-cyan-400'>[CLUSTER]</span> Querying Proxmox resource pools...",
+            "<span class='text-slate-300'>[HOST]</span> CPU: Intel Core i5-12500T | RAM: 32GB ECC | Status: Healthy",
+            "<span class='text-slate-300'>[CONTAINERS]</span> Active LXC instances: 12 running, 0 stopped.",
+            "<span class='text-cyan-400'>[PROXY]</span> Nginx reverse proxy routing active; SSL valid.",
+            "<span class='text-emerald-400'>[HEALTH]</span> ZFS pool scrub finished with 0 errors."
         ]
     },
     {
-        id: "jamf-fleet",
-        title: "iMac Suite Modernisation & Network Infrastructure Rebuild",
-        category: "macOS Management & Networking",
-        tag: "Jamf Pro / Ruckus vSZ",
-        shortDescription: "Full rebuild of a 16-iMac suite using Jamf Pro MDM and Ruckus vSZ. Streamlined deployment processes by stripping out obsolete profiles and policies, re-cabled the workstation setup, and restructured network switch VLAN configs.",
-        description: "Rebuilt and standardized a suite of sixteen iMacs across a public school environment using Jamf Pro and Ruckus vSZ architecture. Streamlined software distribution profiles, automated zero-touch enrollment, and optimized physical network topologies.",
-        command: "jamf policy -event deploy-imac-fleet --verify-vlan",
-        tech: ["Jamf Pro MDM", "Ruckus vSZ", "VLAN Configuration", "Physical Cabling & Rack Cleanup", "Bash"],
-        metrics: "16 Nodes / 0-Touch Deployment",
+        id: "workspace-automations",
+        title: "School Behaviour Escalation & Laptop Booking Tools",
+        category: "Automations",
+        tag: "Google Apps Script",
+        shortDescription: "Built two custom tools using Google Apps Script to automate urgent behaviour alerts and staff laptop loan bookings.",
+        description: "Created two automated workflows using Google Forms, Sheets, and Apps Script for daily use by school staff. The first is an urgent behaviour escalation tool that emails relevant staff based on student needs and logs incident data. The second is an automated laptop loan system that handles staff bookings, assigns devices, notifies IT, and sends automatic daily status reports.",
+        command: "clasp push && google-apps-script trigger run",
+        tech: ["Google Apps Script", "Google Workspace", "Automated Workflows"],
+        metrics: "2 Systems / Active Daily Use",
         outputJson: [
-            "<span class='text-cyan-400'>[INFO]</span> Initializing Jamf Pro MDM handshake...",
-            "<span class='text-emerald-400'>[SUCCESS]</span> Verified secure connection to Ruckus vSZ controller.",
-            "<span class='text-slate-300'>[DEPLOY]</span> Pushing configuration profiles and restricted software policies to 16 iMac nodes.",
-            "<span class='text-cyan-400'>[NETWORK]</span> VLAN tagging verified across switch cabinets; gigabit throughput stable.",
-            "<span class='text-emerald-400'>[COMPLETE]</span> Fleet deployment successful. All zero-touch enrollment triggers cleared."
-        ]
-    },
-    {
-        id: "portfolio-engine",
-        title: "Terminal-Inspired Portfolio & Component Engine",
-        category: "Web Development / Frontend",
-        tag: "Astro / Tailwind v4",
-        shortDescription: "Designed and built a custom static portfolio from scratch using Astro, Tailwind CSS, and TypeScript. Features an interactive terminal command palette, custom motion cursor states, and fluid animations.",
-        description: "Designed and built a custom static portfolio from scratch using Astro, Tailwind CSS, and TypeScript. Features an interactive terminal command palette, custom motion cursor states, and fluid scroll-driven velocity typing animations.",
-        command: "astro build && astro preview --port 4321",
-        tech: ["Astro", "Tailwind CSS v4", "TypeScript", "ClientRouter", "Vite"],
-        metrics: "100/100 Lighthouse Performance",
-        outputJson: [
-            "<span class='text-cyan-400'>[ASTRO]</span> Bundling application components and optimizing static assets...",
-            "<span class='text-slate-300'>[TRANSFORM]</span> Tailwind CSS v4 pipeline compiled successfully with zero rule conflicts.",
-            "<span class='text-cyan-400'>[SCRIPTS]</span> Custom cursor tracking and modal event listeners injected.",
-            "<span class='text-emerald-400'>[BUILD]</span> Generation complete! Output directory: /dist (412 KB gzip).",
-            "<span class='text-emerald-400'>[SERVER] `Local preview running at http://localhost:4321`</span>"
+            "<span class='text-cyan-400'>[GAS]</span> Syncing scripts with Google Workspace project...",
+            "<span class='text-emerald-400'>[SUCCESS]</span> Script deployment completed successfully.",
+            "<span class='text-slate-300'>[BEHAVIOUR]</span> Escalation routing active for senior staff alerts.",
+            "<span class='text-cyan-400'>[LAPTOPS]</span> Asset assignment database and daily email triggers active.",
+            "<span class='text-emerald-400'>[COMPLETE]</span> All background triggers functioning."
         ]
     }
 ];

@@ -12,7 +12,7 @@ export const education: Education = {
     period: "2020 – 2022",
     location: "Taunton, Somerset",
     highlights: [
-        "Specialized in Systems Architecture, Networking, and IT Support",
-        "Focused on practical implementation of hardware and software solutions"
+        "Broad course with units covering networking, programming, and systems administration",
+        "Focused on practical implementation of hardware and software solutions with real world scenarios",
     ]
 };

@@ -1,6 +1,6 @@
 export interface AboutInfo {
     name: string;
-    imageUrl: string;
+    imageUrl: any;
     basedIn: string;
     currentlyStudying: string;
     skillFocus: string;
@@ -11,9 +11,11 @@ export interface AboutInfo {
     personalInterests: string[];
 }
 
+import aboutPfp from "../assets/about_pfp.JPEG";
+
 export const aboutData: AboutInfo = {
     name: "Alfie Hine",
-    imageUrl: "src\\assets\\about_pfp.JPEG",
+    imageUrl: aboutPfp.src,
     basedIn: "Somerset, United Kingdom",
     currentlyStudying: "Microsoft Azure Fundamentals (AZ-900)",
     skillFocus: "Systems Infrastructure & Automation",

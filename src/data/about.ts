@@ -13,7 +13,7 @@ export interface AboutInfo {
 
 export const aboutData: AboutInfo = {
     name: "Alfie Hine",
-    imageUrl: "src/assets/about_pfp.JPEG",
+    imageUrl: "src/assets/about_pfp.svg",
     basedIn: "Somerset, United Kingdom",
     currentlyStudying: "Microsoft Azure Fundamentals (AZ-900)",
     skillFocus: "Systems Infrastructure & Automation",

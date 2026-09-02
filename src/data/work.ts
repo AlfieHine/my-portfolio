@@ -20,7 +20,7 @@ export const experiences: Experience[] = [
         isCurrent: true,
         bullets: [
             "Managing Google Workspace accounts, user permissions, and software rollouts for staff and students.",
-            "Maintaining Proxmox hypervisors, ZFS storage pools, and Nginx reverse proxies for internal school services.",
+            "Maintaining and troubleshooting the school's server infrastructure, including backups and network security.",
             "Handling day-to-day tickets, hardware fixes, and physical network cabling across classrooms."
         ]
     },

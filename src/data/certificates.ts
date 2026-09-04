@@ -3,8 +3,14 @@ export interface Certification {
     issuer: string;
     year: string;
     url?: string;
+    status: 'completed' | 'in-progress';
 }
 
 export const certifications: Certification[] = [
-    { name: "N/A", issuer: "N/A", year: "N/A" },
+    { 
+        name: "Azure Fundamentals (AZ-900)", 
+        issuer: "Microsoft", 
+        year: "Sept 2026",
+        status: "in-progress"
+    },
 ];

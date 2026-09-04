@@ -71,30 +71,56 @@ import { certifications } from '../data/certificates';
                 </ul>
             </div>
 
-            <!-- Certifications Column -->
-            <div>
-                <div class="section-label">Certificates</div>
-                <div class="flex flex-col border-t border-slate-800">
-                    {certifications.map((cert) => (
-                        <div class="flex items-center justify-between py-3 border-b border-slate-800 text-sm group">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <div>
-                                    <span class="font-medium text-slate-100 group-hover:text-cyan-400 transition-colors">{cert.name}</span>
-                                    <span class="text-slate-500 font-normal"> · {cert.issuer}</span>
-                                </div>
-                                {cert.status === 'in-progress' && (
-                                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400">
-                                        In Progress
-                                    </span>
-                                )}
+            <!-- Certifications Column (Re-imagined Split Layout) -->
+            <div class="col-span-1 border-l border-slate-800 pl-12">
+                <div class="section-label mb-8">Certificates</div>
+                
+                <!-- Filter and Sort In-Progress Certs (Most imminent first) -->
+                {certifications.filter(c => c.status === 'in-progress')
+                              .sort((a,b) => a.year.localeCompare(b.year))
+                              .map((cert) => (
+                    <div class="mb-4">
+                        <div class="inline-flex items-center gap-1.5 font-mono text-xs text-amber-400 bg-amber-950/40 border border-amber-900/40 px-2.5 py-0.5 rounded-full mb-2">
+                            <span class="w-1 h-1 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]"></span>
+                            IN PROGRESS
+                        </div>
+                        <div class="flex items-center justify-between py-3 border border-amber-900/40 bg-amber-950/20 px-4 rounded-xl text-sm group min-h-[64px]">
+                            <div class="flex items-center gap-2 min-w-0 mr-4">
+                                <span class="font-semibold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                    {cert.name}
+                                </span>
+                                <span class="text-slate-500 font-normal shrink-0">· {cert.issuer}</span>
                             </div>
-                            <span class="font-mono text-xs text-slate-500 whitespace-nowrap ml-4">
-                                {cert.status === 'in-progress' ? `Target: ${cert.year}` : cert.year}
-                                {cert.url && <span class="text-cyan-400 ml-1">↗</span>}
+                            <span class="font-mono text-xs text-amber-400 whitespace-nowrap shrink-0">
+                                ETA: {cert.year}
                             </span>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
+            
+                <!-- Divider or Margin before Achieved Section -->
+                <div class="mt-8 border-t border-slate-800/60 mb-6"></div>
+            
+                <!-- Label for Completed Section (Subtle) -->
+                <div class="font-mono text-xs text-slate-500 uppercase tracking-wider mb-4">Achieved</div>
+            
+                <!-- Filter and Sort Completed Certs (Most recent first) -->
+                {certifications.filter(c => c.status === 'completed')
+                              .sort((a,b) => b.year.localeCompare(a.year))
+                              .map((cert) => (
+                    <div class="flex items-center justify-between py-3 border-b border-slate-800 text-sm group hover:bg-slate-800/10 px-2 -mx-2 rounded">
+                        <div class="flex items-center gap-2 min-w-0 mr-4">
+                            <span class="font-medium text-slate-100 group-hover:text-cyan-400 transition-colors truncate">
+                                {cert.name}
+                            </span>
+                            <span class="text-slate-500 font-normal shrink-0">· {cert.issuer}</span>
+                        </div>
+                        <span class="font-mono text-xs text-cyan-400/90 whitespace-nowrap shrink-0">
+                            {cert.year}
+                            {cert.url && <span class="text-cyan-400 ml-1">↗</span>}
+                        </span>
+                    </div>
+                ))}
             </div>
 
         </section>

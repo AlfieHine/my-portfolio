@@ -72,20 +72,20 @@ import { certifications } from '../data/certificates';
             </div>
 
             <!-- Certifications Column -->
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-1">
                 <div class="section-label">Certificates</div>
             
                 <!-- IN PROGRESS BOX -->
                 {certifications.filter(c => c.status === 'in-progress').length > 0 && (
-                    <fieldset class="border border-amber-500/30 bg-amber-950/10 rounded-lg px-4 pb-3 pt-1">
+                    <fieldset class="border border-amber-500/30 bg-amber-950/10 rounded-lg px-4 pb-3 pt-1 m-0 -mt-2">
                         <legend class="px-2 font-mono text-[11px] text-amber-400 tracking-wider uppercase">
                             In Progress
                         </legend>
                         <div class="flex flex-col gap-2">
                             {certifications.filter(c => c.status === 'in-progress').map((cert) => (
-                                <div class="flex items-center justify-between py-1.5 text-sm group">
+                                <div class="flex items-center justify-between py-1 text-sm">
                                     <div class="pr-4 min-w-0">
-                                        <span class="font-medium text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                        <span class="font-medium text-slate-100 truncate">
                                             {cert.name}
                                         </span>
                                         <span class="text-slate-500 font-normal"> · {cert.issuer}</span>
@@ -101,25 +101,38 @@ import { certifications } from '../data/certificates';
             
                 <!-- ACHIEVED BOX -->
                 {certifications.filter(c => c.status === 'completed').length > 0 && (
-                    <fieldset class="border border-slate-800 bg-slate-900/20 rounded-lg px-4 pb-3 pt-1">
+                    <fieldset class="border border-slate-800 bg-slate-900/20 rounded-lg px-4 pb-3 pt-1 m-0 mt-1">
                         <legend class="px-2 font-mono text-[11px] text-slate-500 tracking-wider uppercase">
                             Achieved
                         </legend>
                         <div class="flex flex-col gap-2">
-                            {certifications.filter(c => c.status === 'completed').map((cert) => (
-                                <div class="flex items-center justify-between py-1.5 text-sm group">
-                                    <div class="pr-4 min-w-0">
-                                        <span class="font-medium text-slate-100 group-hover:text-cyan-400 transition-colors truncate">
-                                            {cert.name}
+                            {certifications.filter(c => c.status === 'completed').map((cert) => {
+                                const isLink = Boolean(cert.url);
+                                const Tag = isLink ? 'a' : 'div';
+                                return (
+                                    <Tag 
+                                        href={cert.url} 
+                                        target={isLink ? "_blank" : undefined}
+                                        rel={isLink ? "noopener noreferrer" : undefined}
+                                        class={`flex items-center justify-between py-1 text-sm group ${isLink ? 'cursor-pointer' : ''}`}
+                                    >
+                                        <div class="pr-4 min-w-0">
+                                            <span class={`font-medium text-slate-100 transition-colors ${isLink ? 'group-hover:text-cyan-400' : ''}`}>
+                                                {cert.name}
+                                            </span>
+                                            <span class="text-slate-500 font-normal"> · {cert.issuer}</span>
+                                        </div>
+                                        <span class="font-mono text-xs text-cyan-400/90 whitespace-nowrap shrink-0 flex items-center gap-1">
+                                            {cert.year}
+                                            {isLink && (
+                                                <span class="text-cyan-400 inline-block transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                                                    ↗
+                                                </span>
+                                            )}
                                         </span>
-                                        <span class="text-slate-500 font-normal"> · {cert.issuer}</span>
-                                    </div>
-                                    <span class="font-mono text-xs text-cyan-400/90 whitespace-nowrap shrink-0">
-                                        {cert.year}
-                                        {cert.url && <span class="text-cyan-400 ml-1">↗</span>}
-                                    </span>
-                                </div>
-                            ))}
+                                    </Tag>
+                                );
+                            })}
                         </div>
                     </fieldset>
                 )}

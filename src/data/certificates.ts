@@ -8,8 +8,15 @@ export interface Certification {
 
 export const certifications: Certification[] = [
     { 
-        name: "Azure Fundamentals (AZ-900)", 
-        issuer: "Microsoft", 
+        name: "TEST ENTRY 1", 
+        issuer: "TEST", 
+        year: "Oct 2026",
+        url: "https://www.alfiehine.co.uk/projects",
+        status: "completed"
+    },
+    { 
+        name: "TEST ENTRY 2", 
+        issuer: "TEST", 
         year: "Sept 2026",
         url: "https://www.alfiehine.co.uk",
         status: "completed"

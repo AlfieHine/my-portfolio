@@ -14,4 +14,11 @@ export const certifications: Certification[] = [
         url: "",
         status: "completed"
     },
+    { 
+        name: "Azure Fundamentals (AZ-900)", 
+        issuer: "Microsoft", 
+        year: "Sept 2026",
+        url: "",
+        status: "in-progress"
+    },
 ];

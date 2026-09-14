@@ -11,13 +11,13 @@ export interface AboutInfo {
     personalInterests: string[];
 }
 
-import aboutPfp from "../assets/about_pfp.JPEG";
+import aboutPfp from "../assets/about_pfp.jpg";
 
 export const aboutData: AboutInfo = {
     name: "Alfie Hine",
     imageUrl: aboutPfp.src,
     basedIn: "Somerset, United Kingdom",
-    currentlyStudying: "Microsoft Azure Fundamentals (AZ-900)",
+    currentlyStudying: "CompTIA Network+ (N10-009)",
     skillFocus: "Systems Infrastructure & Automation",
     headline: "IT Technician building reliable networks, homelabs, and web automations.",
     bio: [

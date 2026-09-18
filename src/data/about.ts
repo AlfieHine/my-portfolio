@@ -21,9 +21,9 @@ export const aboutData: AboutInfo = {
     skillFocus: "Systems Infrastructure & Automation",
     headline: "IT Technician building reliable networks, homelabs, and web automations.",
     bio: [
-        "I'm a 20-year-old IT Technician based in the UK. Day-to-day, I maintain networks, manage virtual servers, and write scripts to automate repetitive admin tasks.",
-        "Outside of sysadmin work, I build clean, fast web applications using Astro, TypeScript, and Tailwind CSS. As well as maintaining my own homelab with Proxmox VE, hosting multiple virtual machines and containers for personal projects.",
-        "When I'm not tweaking server configs or diagnosing network drops, you'll usually find me wild camping or hiking across Dartmoor and Eryri (Snowdonia)."
+        "I'm an IT Support Technician interested in the infrastructure underneath the things people use every day. Most of my experience has come from working with school IT, where I've had to deal with everything from user support and hardware problems to Jamf, networking and Google Workspace automation.",
+        "Outside work, I run a small homelab with Proxmox and Docker. It's where I experiment with Linux, networking and services that I wouldn't necessarily get to work with day-to-day.",
+        "When I'm not doing something involving computers, I'm usually out hiking, camping or working on some sort of CAD/3D-printing project."
     ],
     philosophy: "I believe IT systems should be simple, well-documented, and dependable. Good design always beats over-complicated setups.",
     coreCompetencies: [

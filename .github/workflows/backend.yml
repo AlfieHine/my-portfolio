@@ -24,9 +24,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install & Run Backend Tests
+      - name: Install, Test & Build
+        working-directory: ./backend
         run: |
-          cd backend
           npm ci
           npm run test
           npm run build
@@ -47,4 +47,4 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ steps.bicep.outputs.functionAppName }}
-          package: 'backend'
+          package: './backend'

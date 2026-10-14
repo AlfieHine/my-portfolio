@@ -22,13 +22,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   kind: 'StorageV2'
 }
 
-// 2. Hosting Plan (Serverless Consumption Y1)
+// 2. Hosting Plan (Serverless Consumption Y1 - Linux)
 resource hostingPlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: 'plan-cloudresume'
   location: location
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
+  }
+  properties: {
+    reserved: true
   }
 }
 
@@ -37,12 +40,13 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' existi
   name: cosmosAccountName
 }
 
-// 4. Azure Function App
+// 4. Azure Function App (Linux)
 resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp,linux'
   properties: {
+    reserved: true
     serverFarmId: hostingPlan.id
     siteConfig: {
       appSettings: [
@@ -61,6 +65,10 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         {
           name: 'WEBSITE_NODE_DEFAULT_VERSION'
           value: '~20'
+        }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
         }
         {
           name: 'COSMOS_DB_CONNECTION_STRING'

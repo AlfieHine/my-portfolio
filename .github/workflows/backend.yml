@@ -30,6 +30,7 @@ jobs:
           npm ci
           npm run test
           npm run build
+          npm prune --production
 
       - name: Azure Login
         uses: azure/login@v2

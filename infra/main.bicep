@@ -10,7 +10,7 @@ param cosmosAccountName string = 'cosmos-cloudresume'
 param functionAppName string = 'func-cloudresume-${uniqueString(resourceGroup().id)}'
 
 @description('Name of the Storage Account for Azure Functions')
-param storageAccountName string = 'stcloudresume${uniqueString(resourceGroup().id)}'
+param storageAccountName string = take('stcloudresume${uniqueString(resourceGroup().id)}', 24)
 
 // 1. Storage Account required by Azure Functions runtime
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {

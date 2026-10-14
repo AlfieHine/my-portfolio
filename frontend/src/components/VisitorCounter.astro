@@ -12,12 +12,19 @@ const { class: className = "" } = Astro.props;
 </p>
 
 <script>
-  const API_URL = "https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api/GetVisitorCount";
+  const BASE_API_URL = "https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api/GetVisitorCount";
 
   async function fetchVisitorCount() {
     const countElement = document.getElementById("visitor-count");
+
+    // Check if user has already visited during this browser session
+    const hasVisited = sessionStorage.getItem("has_visited_session");
+    const url = hasVisited
+      ? `${BASE_API_URL}?increment=false`
+      : `${BASE_API_URL}?increment=true`;
+
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -25,6 +32,9 @@ const { class: className = "" } = Astro.props;
       if (countElement) {
         countElement.textContent = data.count.toString();
       }
+
+      // Mark session as visited
+      sessionStorage.setItem("has_visited_session", "true");
     } catch (error) {
       console.error("Error fetching visitor count:", error);
       if (countElement) {
@@ -33,9 +43,6 @@ const { class: className = "" } = Astro.props;
     }
   }
 
-  // Fetch on initial load
   fetchVisitorCount();
-
-  // Handle Astro View Transitions navigation
   document.addEventListener("astro:after-swap", fetchVisitorCount);
 </script>

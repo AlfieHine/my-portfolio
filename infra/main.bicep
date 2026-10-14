@@ -35,9 +35,37 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   }
 }
 
-// 3. Existing Cosmos DB Reference
+// 3. Existing Cosmos DB Account Reference
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' existing = {
   name: cosmosAccountName
+}
+
+// 3a. Cosmos DB Database: AzureResume
+resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+  parent: cosmosAccount
+  name: 'AzureResume'
+  properties: {
+    resource: {
+      id: 'AzureResume'
+    }
+  }
+}
+
+// 3b. Cosmos DB Container: Counter
+resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDatabase
+  name: 'Counter'
+  properties: {
+    resource: {
+      id: 'Counter'
+      partitionKey: {
+        paths: [
+          '/id'
+        ]
+        kind: 'Hash'
+      }
+    }
+  }
 }
 
 // 4. Azure Function App (Linux)

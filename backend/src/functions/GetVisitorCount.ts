@@ -3,6 +3,13 @@ import { CosmosClient } from "@azure/cosmos";
 
 let cosmosClient: CosmosClient | null = null;
 
+const corsHeaders = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+
 function getCosmosClient(connectionString: string): CosmosClient {
   if (!cosmosClient) {
     cosmosClient = new CosmosClient(connectionString);
@@ -14,6 +21,11 @@ export async function GetVisitorCount(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
+  // Handle CORS preflight options request
+  if (request.method === "OPTIONS") {
+    return { status: 204, headers: corsHeaders };
+  }
+
   context.log(`Http function processed request for url "${request?.url || "unknown"}"`);
 
   // Check for missing connection string to satisfy test contract
@@ -22,7 +34,7 @@ export async function GetVisitorCount(
     context.error("Cosmos DB connection string is missing.");
     return {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
       jsonBody: { error: "Database configuration error" }
     };
   }
@@ -64,7 +76,7 @@ export async function GetVisitorCount(
 
     return {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
       jsonBody: { count }
     };
   } catch (error: any) {
@@ -72,7 +84,7 @@ export async function GetVisitorCount(
 
     return {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
       jsonBody: {
         error: "Failed to process visitor count",
         message: error.message || "Internal server error"
@@ -82,7 +94,7 @@ export async function GetVisitorCount(
 }
 
 app.http("GetVisitorCount", {
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "OPTIONS"],
   authLevel: "anonymous",
   handler: GetVisitorCount
 });

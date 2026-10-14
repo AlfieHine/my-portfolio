@@ -1,0 +1,233 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import { marked } from 'marked';
+
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:7071/api';
+const { slug } = Astro.params;
+
+let post = null;
+let htmlContent = '';
+let errorMsg = '';
+
+if (slug) {
+  try {
+    const res = await fetch(`${API_BASE}/posts/${slug}`);
+    if (res.ok) {
+      post = await res.json();
+    } else {
+      errorMsg = 'Post not found or is currently unavailable.';
+    }
+  } catch (e) {
+    errorMsg = 'Failed to load article content.';
+  }
+}
+
+if (post) {
+  try {
+    let rawContent = post.content || '';
+    rawContent = rawContent.replace(/!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)/g, (match, alt, url) => {
+      const trimmedUrl = url.trim();
+      if (trimmedUrl.startsWith('<') && trimmedUrl.endsWith('>')) return match;
+      return `![${alt}](<${trimmedUrl}>)`;
+    });
+
+    let parsedHtml = await marked.parse(rawContent);
+    htmlContent = parsedHtml.replace(/<img\s+/gi, '<img referrerpolicy="no-referrer" loading="lazy" ');
+  } catch (e) {
+    errorMsg = 'Failed to render article markdown.';
+  }
+}
+
+const wordCount = post?.content ? post.content.trim().split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+---
+
+<Layout title={post ? `${post.title} | Alfie Hine` : 'Post Not Found'}>
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-slate-200">
+    
+    <!-- Top Action Bar -->
+    <div class="mb-8 flex items-center justify-between">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:border-cyan-500/40 transition group"
+      >
+        <span class="group-hover:-translate-x-0.5 transition-transform">&larr;</span> Back to articles
+      </a>
+
+      {post && (
+        <span class="text-xs font-mono text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-800/80">
+          {readingTime} min read
+        </span>
+      )}
+    </div>
+
+    {errorMsg ? (
+      <div class="p-8 bg-slate-900/60 border border-red-500/30 rounded-2xl text-center backdrop-blur-md shadow-2xl my-12">
+        <h1 class="text-2xl font-bold text-slate-100 mb-2">Article Unavailable</h1>
+        <p class="text-slate-400 font-mono text-sm max-w-md mx-auto mb-6">{errorMsg}</p>
+        <a href="/blog" class="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition inline-block">
+          Return to Blog Index
+        </a>
+      </div>
+    ) : (
+      <article class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-12 backdrop-blur-md shadow-2xl relative overflow-hidden">
+        
+        <!-- Ambient Glow -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Article Header -->
+        <header class="mb-10 pb-8 border-b border-slate-800/80 relative">
+          <div class="flex items-center gap-3 text-xs font-mono text-cyan-400 mb-4">
+            <time class="font-semibold">
+              {new Date(post.createdAt || Date.now()).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}
+            </time>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight leading-tight mb-6">
+            {post.title}
+          </h1>
+
+          {post.summary && (
+            <p class="text-slate-300 text-lg leading-relaxed font-normal bg-slate-950/40 border-l-2 border-cyan-500 p-4 rounded-r-xl">
+              {post.summary}
+            </p>
+          )}
+        </header>
+
+        <!-- Cover Image -->
+        {post.coverImage && (
+          <div class="mb-10 rounded-xl overflow-hidden border border-slate-800 shadow-2xl max-w-[75%] mx-auto">
+            <img
+              src={post.coverImage}
+              alt={post.title}
+              referrerpolicy="no-referrer"
+              class="w-full h-auto max-h-[480px] object-cover"
+            />
+          </div>
+        )}
+
+        <!-- Markdown Article Content -->
+        <div
+          class="markdown-content text-slate-300 leading-relaxed text-base"
+          set:html={htmlContent}
+        />
+
+        <!-- Bottom Footer Navigation -->
+        <footer class="mt-16 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-slate-400 font-mono">End of article</p>
+
+          <div class="flex items-center gap-3">
+            <button 
+              onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+              class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-mono border border-slate-800 transition cursor-pointer"
+            >
+              Back to Top &uarr;
+            </button>
+            <a
+              href="/blog"
+              class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition flex items-center gap-1.5"
+            >
+              &larr; Back to articles
+            </a>
+          </div>
+        </footer>
+
+      </article>
+    )}
+  </main>
+</Layout>
+
+<style is:global>
+  /* Markdown Styling Engine */
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3,
+  .markdown-content h4 {
+    color: #f8fafc;
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    line-height: 1.3;
+  }
+  .markdown-content h1 { font-size: 1.875em; border-bottom: 1px solid #1e293b; padding-bottom: 0.4em; }
+  .markdown-content h2 { font-size: 1.5em; border-bottom: 1px solid #1e293b; padding-bottom: 0.3em; }
+  .markdown-content h3 { font-size: 1.25em; color: #38bdf8; }
+
+  .markdown-content p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+    color: #cbd5e1;
+  }
+
+  .markdown-content a {
+    color: #38bdf8;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s;
+  }
+  .markdown-content a:hover {
+    color: #7dd3fc;
+  }
+
+  .markdown-content code {
+    background-color: #090d16;
+    color: #38bdf8;
+    padding: 0.25em 0.5em;
+    border-radius: 0.375rem;
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    border: 1px solid #1e293b;
+  }
+
+  .markdown-content pre {
+    background-color: #050811;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    border: 1px solid #1e293b;
+    margin: 1.75em 0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+
+  .markdown-content pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: #e2e8f0;
+  }
+
+  .markdown-content blockquote {
+    border-left: 3px solid #06b6d4;
+    padding-left: 1.25rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin: 1.75em 0;
+    background-color: rgba(15, 23, 42, 0.4);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  /* Article Image Styling - Sized down to 75% */
+  .markdown-content img {
+    display: block;
+    max-width: 75%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 2em auto;
+    border: 1px solid #1e293b;
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5em; }
+  .markdown-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.5em; }
+  .markdown-content li { margin-bottom: 0.5em; color: #cbd5e1; }
+  .markdown-content hr { border-color: #1e293b; margin: 2.5em 0; }
+</style>

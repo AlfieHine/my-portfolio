@@ -1,0 +1,604 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Environment variables passed to client script
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:7071/api';
+const GITHUB_CLIENT_ID = import.meta.env.PUBLIC_GITHUB_CLIENT_ID || '';
+---
+
+<Layout title="CMS Admin Panel | Alfie Hine">
+  <main class="max-w-6xl mx-auto px-6 py-12 text-slate-200">
+    
+    <!-- 1. AUTHENTICATION GATE (Shown when logged out) -->
+    <div id="auth-gate" class="max-w-md mx-auto my-20 p-8 bg-slate-900/80 border border-slate-800 rounded-2xl text-center shadow-2xl">
+      <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl flex items-center justify-center mx-auto mb-4 border border-cyan-500/20">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-100 mb-2">CMS Admin Login</h1>
+      <p class="text-slate-400 text-sm mb-6">Authenticate with your GitHub account to manage blog posts and media assets.</p>
+
+      <div id="auth-status" class="hidden p-3 mb-4 rounded-lg text-xs font-mono"></div>
+
+      <button
+        id="login-btn"
+        class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold rounded-lg border border-slate-700 transition flex items-center justify-center gap-3 cursor-pointer"
+      >
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        Sign in with GitHub
+      </button>
+    </div>
+
+    <!-- 2. MAIN CMS DASHBOARD (Shown when authenticated) -->
+    <div id="cms-dashboard" class="hidden space-y-8">
+      
+      <!-- Top Header & Actions -->
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-2 text-cyan-400 font-mono text-xs mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>ADMIN AUTHENTICATED</span>
+          </div>
+          <h1 class="text-3xl font-bold text-slate-100">Content Management</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="new-post-btn" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg transition text-sm flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            New Post
+          </button>
+          <button id="logout-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition cursor-pointer">
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Bulk Action Bar -->
+      <div id="bulk-bar" class="hidden p-3 bg-slate-900 border border-cyan-500/30 rounded-xl flex items-center justify-between">
+        <span id="bulk-count" class="text-sm font-mono text-cyan-400">0 items selected</span>
+        <button id="bulk-delete-btn" class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-md text-xs font-semibold transition cursor-pointer">
+          Delete Selected
+        </button>
+      </div>
+
+      <!-- Posts Table -->
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-800/60 text-slate-400 font-mono text-xs uppercase border-b border-slate-800">
+            <tr>
+              <th class="p-4 w-10 text-center">
+                <input type="checkbox" id="select-all" class="rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0 cursor-pointer"/>
+              </th>
+              <th class="p-4">Title & Slug</th>
+              <th class="p-4">Status</th>
+              <th class="p-4">Created Date</th>
+              <th class="p-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="posts-tbody" class="divide-y divide-slate-800/60">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. EDITOR / CREATOR MODAL -->
+    <div id="editor-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl my-8">
+        
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+          <h2 id="modal-title" class="text-xl font-bold text-slate-100">Create New Article</h2>
+          <button id="close-modal-btn" class="text-slate-400 hover:text-slate-200 text-2xl font-bold cursor-pointer">&times;</button>
+        </div>
+
+        <!-- Modal Form Body -->
+        <div class="p-6 space-y-6 overflow-y-auto flex-1">
+          
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-mono text-slate-400 mb-2">TITLE</label>
+              <input type="text" id="edit-title" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 focus:border-cyan-500 outline-none text-sm"/>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-mono text-slate-400">SLUG</label>
+                <span id="slug-locked-notice" class="hidden text-[10px] font-mono text-amber-400/80">Locked for published posts</span>
+              </div>
+              <input type="text" id="edit-slug" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 focus:border-cyan-500 outline-none text-sm font-mono transition-opacity"/>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-mono text-slate-400 mb-2">STATUS</label>
+            <select id="edit-status" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 focus:border-cyan-500 outline-none text-sm">
+              <option value="active">Active (Visible on Blog)</option>
+              <option value="sleeping">Sleeping (Draft / Admin Only)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-mono text-slate-400 mb-2">SUMMARY / EXCERPT</label>
+            <textarea id="edit-summary" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 focus:border-cyan-500 outline-none text-sm"></textarea>
+          </div>
+
+          <!-- Dedicated Image Attachment Section -->
+          <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-mono text-slate-400">ATTACH IMAGE TO ARTICLE</label>
+              <span id="upload-status" class="text-xs font-mono hidden"></span>
+            </div>
+            
+            <div class="grid sm:grid-cols-12 gap-3 items-end">
+              <div class="sm:col-span-5">
+                <label class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Select File</label>
+                <input 
+                  type="file" 
+                  id="image-file-input" 
+                  accept="image/*" 
+                  class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700 cursor-pointer bg-slate-900 border border-slate-800 rounded-lg p-1"
+                />
+              </div>
+
+              <div class="sm:col-span-4">
+                <label class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Caption / Alt Text (Optional)</label>
+                <input 
+                  type="text" 
+                  id="image-caption-input" 
+                  placeholder="e.g. System Architecture Diagram" 
+                  class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-slate-100 focus:border-cyan-500 outline-none text-xs"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <button 
+                  type="button" 
+                  id="upload-image-btn" 
+                  class="w-full py-2.5 px-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  Upload & Append
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Editor Area -->
+          <div>
+            <label class="block text-xs font-mono text-slate-400 mb-2">MARKDOWN CONTENT</label>
+            <textarea id="edit-content" rows="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-4 text-slate-100 font-mono text-sm focus:border-cyan-500 outline-none leading-relaxed" placeholder="# Write markdown here..."></textarea>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-6 border-t border-slate-800 flex justify-end gap-3 bg-slate-900/50 rounded-b-2xl">
+          <button id="cancel-modal-btn" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-semibold transition cursor-pointer">
+            Cancel
+          </button>
+          <button id="save-post-btn" class="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg text-sm font-bold transition cursor-pointer">
+            Save Article
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<script is:inline define:vars={{ API_BASE, GITHUB_CLIENT_ID }}>
+  let postsData = [];
+  let selectedIds = new Set();
+  let editingPostId = null;
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    // 1. Handle GitHub OAuth Redirect Callback
+    if (code) {
+      showAuthStatus('Exchanging OAuth code for admin session...', 'info');
+      try {
+        const res = await fetch(`${API_BASE}/AuthGitHub`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('adminToken', data.token);
+          window.history.replaceState({}, document.title, window.location.pathname);
+          initCMS();
+        } else {
+          showAuthStatus(data.error || 'Authentication failed.', 'error');
+        }
+      } catch (e) {
+        showAuthStatus('Failed to connect to authentication server.', 'error');
+      }
+      return;
+    }
+
+    // 2. Check Existing Token
+    if (localStorage.getItem('adminToken')) {
+      initCMS();
+    }
+  });
+
+  // Attach Event Listeners
+  document.getElementById('login-btn').addEventListener('click', () => {
+    const redirectUri = window.location.href.split('?')[0];
+    const clientId = GITHUB_CLIENT_ID || 'Ov23liXXXXXXXXXX';
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user`;
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('adminToken');
+    window.location.reload();
+  });
+
+  document.getElementById('new-post-btn').addEventListener('click', () => openEditor());
+  document.getElementById('close-modal-btn').addEventListener('click', closeEditor);
+  document.getElementById('cancel-modal-btn').addEventListener('click', closeEditor);
+  document.getElementById('save-post-btn').addEventListener('click', savePost);
+  document.getElementById('select-all').addEventListener('change', toggleSelectAll);
+  document.getElementById('bulk-delete-btn').addEventListener('click', handleBulkDelete);
+  document.getElementById('upload-image-btn').addEventListener('click', handleUploadAndAppend);
+
+  // Auto-generate slug from title ONLY when creating a new post
+  document.getElementById('edit-title').addEventListener('input', (e) => {
+    if (!editingPostId) {
+      const slug = e.target.value.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+      document.getElementById('edit-slug').value = slug;
+    }
+  });
+
+  async function handleUploadAndAppend() {
+    const fileInput = document.getElementById('image-file-input');
+    const captionInput = document.getElementById('image-caption-input');
+    const uploadBtn = document.getElementById('upload-image-btn');
+
+    const file = fileInput.files[0];
+    if (!file) {
+      showUploadStatus('Please select an image file first.', 'error');
+      return;
+    }
+
+    uploadBtn.disabled = true;
+    uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    showUploadStatus('Uploading image to Azure Blob Storage...', 'info');
+
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const base64Data = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+
+      const res = await fetch(`${API_BASE}/cms/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileData: base64Data,
+          contentType: file.type
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.url) {
+        showUploadStatus('Image uploaded & Markdown appended!', 'success');
+
+        const caption = captionInput.value.trim() || file.name.split('.')[0];
+        const markdownSnippet = `\n\n![${caption}](${data.url})\n`;
+        
+        const contentTextarea = document.getElementById('edit-content');
+        contentTextarea.value = contentTextarea.value + markdownSnippet;
+
+        // Reset inputs
+        fileInput.value = '';
+        captionInput.value = '';
+      } else {
+        const errorText = data.error || data.message || `HTTP ${res.status}: Upload failed`;
+        showUploadStatus(`Upload failed: ${errorText}`, 'error');
+      }
+    } catch (err) {
+      showUploadStatus(`Network error: ${err.message}`, 'error');
+    } finally {
+      uploadBtn.disabled = false;
+      uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+  }
+
+  function showUploadStatus(msg, type) {
+    const el = document.getElementById('upload-status');
+    el.textContent = msg;
+    el.className = `text-xs font-mono block ${
+      type === 'error' ? 'text-red-400' : type === 'success' ? 'text-emerald-400' : 'text-cyan-400'
+    }`;
+  }
+
+  async function initCMS() {
+    document.getElementById('auth-gate').classList.add('hidden');
+    document.getElementById('cms-dashboard').classList.remove('hidden');
+    await loadPosts();
+  }
+
+  async function loadPosts() {
+    const token = localStorage.getItem('adminToken');
+    try {
+      const res = await fetch(`${API_BASE}/cms/posts`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        alert('Admin token expired or invalid. Resetting login session...');
+        localStorage.removeItem('adminToken');
+        window.location.reload();
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!res.ok || !Array.isArray(data)) {
+        alert(`API Error: ${JSON.stringify(data)}`);
+        return;
+      }
+
+      postsData = data;
+      renderTable();
+    } catch (e) {
+      alert(`Fetch Network Failure: ${e.message}`);
+    }
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('posts-tbody');
+    tbody.innerHTML = '';
+
+    postsData.forEach((post) => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-800/40 transition';
+      
+      const isChecked = selectedIds.has(post.id);
+      const isSleeping = post.status === 'sleeping';
+
+      tr.innerHTML = `
+        <td class="p-4 text-center">
+          <input type="checkbox" data-id="${post.id}" ${isChecked ? 'checked' : ''} class="post-checkbox rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0 cursor-pointer"/>
+        </td>
+        <td class="p-4">
+          <div class="font-bold text-slate-100">${escapeHtml(post.title)}</div>
+          <div class="text-xs font-mono text-slate-500">/${escapeHtml(post.slug)}</div>
+        </td>
+        <td class="p-4">
+          <button data-id="${post.id}" class="toggle-status-btn cursor-pointer px-2.5 py-1 rounded-full text-xs font-mono inline-flex items-center gap-1.5 ${
+            isSleeping 
+              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
+              : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          }">
+            <span class="w-1.5 h-1.5 rounded-full ${isSleeping ? 'bg-amber-400' : 'bg-emerald-400'}"></span>
+            ${isSleeping ? 'Sleeping' : 'Active'}
+          </button>
+        </td>
+        <td class="p-4 text-xs font-mono text-slate-400">
+          ${new Date(post.createdAt || Date.now()).toLocaleDateString('en-GB')}
+        </td>
+        <td class="p-4 text-right space-x-2">
+          <button data-id="${post.id}" class="edit-btn text-cyan-400 hover:text-cyan-300 font-mono text-xs cursor-pointer">Edit</button>
+          <button data-id="${post.id}" data-slug="${post.slug}" class="delete-btn text-red-400 hover:text-red-300 font-mono text-xs cursor-pointer">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll('.post-checkbox').forEach(cb => cb.addEventListener('change', handleSelectRow));
+    document.querySelectorAll('.toggle-status-btn').forEach(btn => btn.addEventListener('click', handleToggleStatus));
+    document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => openEditor(e.target.dataset.id)));
+    document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleSingleDelete));
+
+    updateBulkBar();
+  }
+
+  async function handleToggleStatus(e) {
+    const id = e.currentTarget.dataset.id;
+    const post = postsData.find(p => p.id === id);
+    if (!post) return;
+
+    const newStatus = post.status === 'active' ? 'sleeping' : 'active';
+    const token = localStorage.getItem('adminToken');
+
+    const res = await fetch(`${API_BASE}/cms/posts`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: post.id, slug: post.slug, status: newStatus })
+    });
+
+    if (res.ok) await loadPosts();
+  }
+
+  async function handleSingleDelete(e) {
+    const { id, slug } = e.currentTarget.dataset;
+    if (!confirm('Are you sure you want to delete this post?')) return;
+
+    const token = localStorage.getItem('adminToken');
+    const res = await fetch(`${API_BASE}/cms/posts`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ items: [{ id, slug }] })
+    });
+
+    if (res.ok) await loadPosts();
+  }
+
+  async function handleBulkDelete() {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Delete ${selectedIds.size} selected posts?`)) return;
+
+    const itemsToDelete = postsData
+      .filter(p => selectedIds.has(p.id))
+      .map(p => ({ id: p.id, slug: p.slug }));
+
+    const token = localStorage.getItem('adminToken');
+    const res = await fetch(`${API_BASE}/cms/posts`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ items: itemsToDelete })
+    });
+
+    if (res.ok) {
+      selectedIds.clear();
+      await loadPosts();
+    }
+  }
+
+  function toggleSelectAll(e) {
+    if (e.target.checked) {
+      postsData.forEach(p => selectedIds.add(p.id));
+    } else {
+      selectedIds.clear();
+    }
+    renderTable();
+  }
+
+  function handleSelectRow(e) {
+    const id = e.target.dataset.id;
+    if (e.target.checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    updateBulkBar();
+  }
+
+  function updateBulkBar() {
+    const bulkBar = document.getElementById('bulk-bar');
+    const bulkCount = document.getElementById('bulk-count');
+    if (selectedIds.size > 0) {
+      bulkBar.classList.remove('hidden');
+      bulkCount.textContent = `${selectedIds.size} item(s) selected`;
+    } else {
+      bulkBar.classList.add('hidden');
+    }
+  }
+
+  function openEditor(postId = null) {
+    editingPostId = postId;
+    const modal = document.getElementById('editor-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const slugInput = document.getElementById('edit-slug');
+    const slugLockedNotice = document.getElementById('slug-locked-notice');
+
+    // Reset attachment status & fields
+    document.getElementById('image-file-input').value = '';
+    document.getElementById('image-caption-input').value = '';
+    const statusEl = document.getElementById('upload-status');
+    statusEl.textContent = '';
+    statusEl.classList.add('hidden');
+
+    if (postId) {
+      const post = postsData.find(p => p.id === postId);
+      modalTitle.textContent = 'Edit Article';
+      document.getElementById('edit-title').value = post.title || '';
+      slugInput.value = post.slug || '';
+      
+      // Disable slug editing when modifying an existing post
+      slugInput.disabled = true;
+      slugInput.classList.add('opacity-50', 'bg-slate-900/50', 'cursor-not-allowed');
+      slugLockedNotice.classList.remove('hidden');
+
+      document.getElementById('edit-status').value = post.status || 'active';
+      document.getElementById('edit-summary').value = post.summary || '';
+      document.getElementById('edit-content').value = post.content || '';
+    } else {
+      modalTitle.textContent = 'Create New Article';
+      document.getElementById('edit-title').value = '';
+      slugInput.value = '';
+      
+      // Enable slug editing for new posts
+      slugInput.disabled = false;
+      slugInput.classList.remove('opacity-50', 'bg-slate-900/50', 'cursor-not-allowed');
+      slugLockedNotice.classList.add('hidden');
+
+      document.getElementById('edit-status').value = 'active';
+      document.getElementById('edit-summary').value = '';
+      document.getElementById('edit-content').value = '';
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function closeEditor() {
+    document.getElementById('editor-modal').classList.add('hidden');
+    editingPostId = null;
+  }
+
+  async function savePost() {
+    const title = document.getElementById('edit-title').value.trim();
+    const slug = document.getElementById('edit-slug').value.trim().toLowerCase();
+    const status = document.getElementById('edit-status').value;
+    const summary = document.getElementById('edit-summary').value.trim();
+    const content = document.getElementById('edit-content').value;
+
+    if (!title || !slug || !content) {
+      alert('Please complete Title, Slug, and Content.');
+      return;
+    }
+
+    // Duplicate Slug Validation: Check if another post already uses this slug
+    const duplicateSlugPost = postsData.find(
+      (p) => p.slug.toLowerCase() === slug && p.id !== editingPostId
+    );
+
+    if (duplicateSlugPost) {
+      alert(`An article with the slug "${slug}" already exists ("${duplicateSlugPost.title}"). Please adjust the title or slug to make it unique.`);
+      return;
+    }
+
+    const token = localStorage.getItem('adminToken');
+    const method = editingPostId ? 'PUT' : 'POST';
+    const payload = { title, slug, status, summary, content };
+    if (editingPostId) payload.id = editingPostId;
+
+    const res = await fetch(`${API_BASE}/cms/posts`, {
+      method,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      closeEditor();
+      await loadPosts();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      alert(`Error saving post: ${err.error || err.message || 'Unknown server error'}`);
+    }
+  }
+
+  function showAuthStatus(msg, type) {
+    const el = document.getElementById('auth-status');
+    el.textContent = msg;
+    el.className = `p-3 mb-4 rounded-lg text-xs font-mono block ${
+      type === 'error' ? 'bg-red-950/60 text-red-400 border border-red-500/30' : 'bg-cyan-950/60 text-cyan-400 border border-cyan-500/30'
+    }`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+</script>

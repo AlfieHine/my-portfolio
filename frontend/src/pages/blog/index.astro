@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Dynamic API endpoint resolution (Azure SWA reverse proxy vs. Local Functions)
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:7071/api';
+
+interface Post {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  coverImage?: string;
+  createdAt: string;
+}
+
+let posts: Post[] = [];
+let errorMsg = '';
+
+try {
+  const res = await fetch(`${API_BASE}/posts`);
+  if (res.ok) {
+    posts = await res.json();
+  } else {
+    errorMsg = 'Failed to load posts.';
+  }
+} catch (e) {
+  errorMsg = 'Backend API is currently unreachable.';
+}
+---
+
+<Layout title="Blog | Alfie Hine">
+  <main class="max-w-4xl mx-auto px-6 py-16 text-slate-200">
+    <!-- Header Section -->
+    <header class="mb-12 border-b border-slate-800 pb-8">
+      <div class="flex items-center gap-2 text-cyan-400 font-mono text-sm mb-2">
+        <span>04.</span>
+        <span>ARTICLES & INSIGHTS</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-100 tracking-tight">
+        Engineering Blog
+      </h1>
+      <p class="text-slate-400 mt-3 text-lg">
+        Thoughts, architectural deep-dives, and lessons learned while building in the cloud.
+      </p>
+    </header>
+
+    <!-- Error State -->
+    {errorMsg && (
+      <div class="p-4 bg-red-950/40 border border-red-500/30 rounded-lg text-red-300 font-mono text-sm">
+        {errorMsg}
+      </div>
+    )}
+
+    <!-- Empty State -->
+    {!errorMsg && posts.length === 0 && (
+      <div class="text-center py-16 border border-dashed border-slate-800 rounded-xl">
+        <p class="text-slate-400 font-mono">No active posts found. Stay tuned for upcoming articles!</p>
+      </div>
+    )}
+
+    <!-- Posts Feed Grid -->
+    <div class="grid gap-8">
+      {posts.map((post) => (
+        <a
+          href={`/blog/${post.slug}`}
+          class="group block p-6 bg-slate-900/60 border border-slate-800 rounded-xl hover:border-cyan-500/50 transition-all duration-200 hover:-translate-y-0.5"
+        >
+          {post.coverImage && (
+            <img
+              src={post.coverImage}
+              alt={post.title}
+              class="w-full h-48 sm:h-64 object-cover rounded-lg mb-6 border border-slate-800 group-hover:border-slate-700 transition"
+            />
+          )}
+
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-3">
+            <time datetime={post.createdAt}>
+              {new Date(post.createdAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+              })}
+            </time>
+            <span class="text-cyan-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Read article &rarr;
+            </span>
+          </div>
+
+          <h2 class="text-2xl font-bold text-slate-100 group-hover:text-cyan-400 transition mb-3">
+            {post.title}
+          </h2>
+
+          <p class="text-slate-400 text-sm line-clamp-3 leading-relaxed">
+            {post.summary}
+          </p>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>

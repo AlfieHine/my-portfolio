@@ -28,7 +28,6 @@ export async function AuthGitHub(request: HttpRequest, context: InvocationContex
 
         const clientId = process.env.GITHUB_CLIENT_ID;
         const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-        const adminUsername = process.env.GITHUB_ADMIN_USERNAME;
         const jwtSecret = process.env.JWT_SECRET || "default_dev_secret";
 
         if (!clientId || !clientSecret) {
@@ -73,8 +72,13 @@ export async function AuthGitHub(request: HttpRequest, context: InvocationContex
 
         const userData = await userResponse.json() as { login?: string; avatar_url?: string; name?: string };
 
-        // 3. Admin user verification
-        if (userData.login?.toLowerCase() !== adminUsername?.toLowerCase()) {
+        // 3. Admin user verification (Supports comma-separated usernames)
+        const allowedAdmins = (process.env.GITHUB_ADMIN_USERNAME || "")
+            .split(",")
+            .map((username) => username.trim().toLowerCase())
+            .filter(Boolean);
+
+        if (!userData.login || !allowedAdmins.includes(userData.login.toLowerCase())) {
             return {
                 status: 403,
                 headers: { "Access-Control-Allow-Origin": "*" },

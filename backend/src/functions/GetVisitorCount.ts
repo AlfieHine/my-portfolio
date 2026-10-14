@@ -3,12 +3,8 @@ import { CosmosClient } from "@azure/cosmos";
 
 let cosmosClient: CosmosClient | null = null;
 
-function getCosmosClient(): CosmosClient {
+function getCosmosClient(connectionString: string): CosmosClient {
   if (!cosmosClient) {
-    const connectionString = process.env.COSMOS_DB_CONNECTION_STRING;
-    if (!connectionString) {
-      throw new Error("COSMOS_DB_CONNECTION_STRING environment variable is not set.");
-    }
     cosmosClient = new CosmosClient(connectionString);
   }
   return cosmosClient;
@@ -18,13 +14,25 @@ export async function GetVisitorCount(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  context.log(`Http function processed request for url "${request.url}"`);
+  context.log(`Http function processed request for url "${request?.url || "unknown"}"`);
 
-  // Check if caller wants to increment (defaults to true unless ?increment=false)
-  const shouldIncrement = request.query.get("increment") !== "false";
+  // Check for missing connection string to satisfy test contract
+  const connectionString = process.env.COSMOS_DB_CONNECTION_STRING;
+  if (!connectionString) {
+    context.error("Cosmos DB connection string is missing.");
+    return {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+      jsonBody: { error: "Database configuration error" }
+    };
+  }
+
+  // Safely check query string using optional chaining
+  const incrementParam = request?.query?.get?.("increment");
+  const shouldIncrement = incrementParam !== "false";
 
   try {
-    const client = getCosmosClient();
+    const client = getCosmosClient(connectionString);
     const database = client.database("CloudResume");
     const container = database.container("Counter");
 
@@ -45,7 +53,7 @@ export async function GetVisitorCount(
       }
     }
 
-    // Only increment and update Cosmos DB if shouldIncrement is true
+    // Increment count if requested
     if (shouldIncrement) {
       count += 1;
       await container.items.upsert({

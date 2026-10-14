@@ -1,17 +1,35 @@
 ---
-export const prerender = false;
-
 import Layout from '../../layouts/Layout.astro';
 import { marked } from 'marked';
 
-const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:7071/api';
-const { slug } = Astro.params;
+export async function getStaticPaths() {
+  const API_BASE = import.meta.env.PUBLIC_API_URL || 'https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api';
 
-let post = null;
+  try {
+    const res = await fetch(`${API_BASE}/posts`);
+    if (!res.ok) return [];
+
+    const posts = await res.json();
+
+    return posts.map((post: any) => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+  } catch (e) {
+    console.error('Error fetching paths in getStaticPaths:', e);
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+let { post } = Astro.props;
+
 let htmlContent = '';
 let errorMsg = '';
 
-if (slug) {
+const API_BASE = import.meta.env.PUBLIC_API_URL || 'https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api';
+
+if (!post && slug) {
   try {
     const res = await fetch(`${API_BASE}/posts/${slug}`);
     if (res.ok) {
@@ -34,7 +52,9 @@ if (post) {
     });
 
     let parsedHtml = await marked.parse(rawContent);
-    htmlContent = parsedHtml.replace(/<img\s+/gi, '<img referrerpolicy="no-referrer" loading="lazy" ');
+    if (typeof parsedHtml === 'string') {
+      htmlContent = parsedHtml.replace(/<img\s+/gi, '<img referrerpolicy="no-referrer" loading="lazy" ');
+    }
   } catch (e) {
     errorMsg = 'Failed to render article markdown.';
   }

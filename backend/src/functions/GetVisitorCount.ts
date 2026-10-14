@@ -45,7 +45,7 @@ export async function GetVisitorCount(
 
   try {
     const client = getCosmosClient(connectionString);
-    const database = client.database("CloudResume");
+    const database = client.database("AzureResume");
     const container = database.container("Counter");
 
     const itemId = "1";

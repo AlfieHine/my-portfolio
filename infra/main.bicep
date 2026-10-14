@@ -49,6 +49,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     reserved: true
     serverFarmId: hostingPlan.id
     siteConfig: {
+      linuxFxVersion: 'NODE|20'
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
@@ -61,14 +62,6 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'node'
-        }
-        {
-          name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '~20'
-        }
-        {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
         }
         {
           name: 'COSMOS_DB_CONNECTION_STRING'

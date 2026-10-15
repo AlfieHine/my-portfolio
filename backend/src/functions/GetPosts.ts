@@ -1,31 +1,45 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { CosmosClient } from "@azure/cosmos";
+import { CosmosClient, Container } from "@azure/cosmos";
 
-const connectionString = process.env.COSMOS_DB_CONNECTION_STRING || "";
+interface Post {
+    id: string;
+    slug: string;
+    title: string;
+    summary: string;
+    coverImage?: string;
+    status: string;
+    createdAt: string;
+    updatedAt?: string;
+}
+
+// Singleton container reference reused across warm function invocations
+let containerInstance: Container | null = null;
+
+function getContainer(): Container {
+    if (!containerInstance) {
+        const connectionString = process.env.COSMOS_DB_CONNECTION_STRING;
+        if (!connectionString) {
+            throw new Error("COSMOS_DB_CONNECTION_STRING environment variable is missing or empty.");
+        }
+        const client = new CosmosClient(connectionString);
+        containerInstance = client.database("AzureResume").container("Posts");
+    }
+    return containerInstance;
+}
+
+const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type"
+};
 
 export async function GetPosts(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     if (request.method === "OPTIONS") {
-        return {
-            status: 204,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type"
-            }
-        };
+        return { status: 204, headers: corsHeaders };
     }
 
     try {
-        if (!connectionString) {
-            return {
-                status: 500,
-                headers: { "Access-Control-Allow-Origin": "*" },
-                jsonBody: { error: "Cosmos DB connection string not configured." }
-            };
-        }
-
-        const client = new CosmosClient(connectionString);
-        const container = client.database("AzureResume").container("Posts");
+        const container = getContainer();
         const slug = request.params.slug;
 
         if (slug) {
@@ -35,19 +49,19 @@ export async function GetPosts(request: HttpRequest, context: InvocationContext)
                 parameters: [{ name: "@slug", value: slug }]
             };
 
-            const { resources } = await container.items.query(querySpec).fetchAll();
+            const { resources } = await container.items.query<Post>(querySpec).fetchAll();
 
             if (resources.length === 0) {
                 return {
                     status: 404,
-                    headers: { "Access-Control-Allow-Origin": "*" },
-                    jsonBody: { error: "Post not found" }
+                    headers: corsHeaders,
+                    jsonBody: { error: `Post with slug '${slug}' not found.` }
                 };
             }
 
             return {
                 status: 200,
-                headers: { "Access-Control-Allow-Origin": "*" },
+                headers: corsHeaders,
                 jsonBody: resources[0]
             };
         } else {
@@ -56,20 +70,21 @@ export async function GetPosts(request: HttpRequest, context: InvocationContext)
                 query: "SELECT c.id, c.slug, c.title, c.summary, c.coverImage, c.status, c.createdAt, c.updatedAt FROM c WHERE c.status = 'active' ORDER BY c.createdAt DESC"
             };
 
-            const { resources } = await container.items.query(querySpec).fetchAll();
+            const { resources } = await container.items.query<Post>(querySpec).fetchAll();
 
             return {
                 status: 200,
-                headers: { "Access-Control-Allow-Origin": "*" },
+                headers: corsHeaders,
                 jsonBody: resources
             };
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to fetch posts";
         context.error("GetPosts error:", error);
         return {
             status: 500,
-            headers: { "Access-Control-Allow-Origin": "*" },
-            jsonBody: { error: error.message || "Failed to fetch posts" }
+            headers: corsHeaders,
+            jsonBody: { error: errorMessage }
         };
     }
 }

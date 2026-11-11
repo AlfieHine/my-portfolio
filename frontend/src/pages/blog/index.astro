@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 ---
 
-<Layout title="Blog | Alfie Hine">
+<Layout title="Tech Blog | Alfie Hine">
   <main class="max-w-4xl mx-auto px-6 py-16 text-slate-200">
     <!-- Header Section -->
     <header class="mb-12 border-b border-slate-800 pb-8">
@@ -47,67 +47,88 @@ import Layout from '../../layouts/Layout.astro';
   }
 
   const API_BASE = import.meta.env.PUBLIC_API_URL || 'https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api';
+  const STORAGE_KEY = 'cached_blog_posts';
 
-  async function loadPosts() {
+  function displayPosts(posts: Post[]) {
     const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error-msg');
     const emptyEl = document.getElementById('empty-state');
     const containerEl = document.getElementById('posts-container');
 
+    loadingEl?.classList.add('hidden');
+
+    if (!posts || posts.length === 0) {
+      emptyEl?.classList.remove('hidden');
+      return;
+    }
+
+    if (containerEl) {
+      containerEl.innerHTML = posts.map(post => `
+        <a
+          href="/blog/${post.slug}"
+          class="group block p-6 bg-slate-900/60 border border-slate-800 rounded-xl hover:border-cyan-500/50 transition-all duration-200 hover:-translate-y-0.5"
+        >
+          ${post.coverImage ? `
+            <img
+              src="${post.coverImage}"
+              alt="${post.title}"
+              class="w-full h-48 sm:h-64 object-cover rounded-lg mb-6 border border-slate-800 group-hover:border-slate-700 transition"
+            />
+          ` : ''}
+
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-3">
+            <time datetime="${post.createdAt}">
+              ${new Date(post.createdAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+              })}
+            </time>
+            <span class="text-cyan-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Read article &rarr;
+            </span>
+          </div>
+
+          <h2 class="text-2xl font-bold text-slate-100 group-hover:text-cyan-400 transition mb-3">
+            ${post.title}
+          </h2>
+
+          <p class="text-slate-400 text-sm line-clamp-3 leading-relaxed">
+            ${post.summary}
+          </p>
+        </a>
+      `).join('');
+    }
+  }
+
+  async function loadPosts() {
+    // 1. Render immediately from session storage if available
+    const cachedData = sessionStorage.getItem(STORAGE_KEY);
+    if (cachedData) {
+      try {
+        const posts = JSON.parse(cachedData);
+        displayPosts(posts);
+      } catch (e) {
+        // Fall back to live fetch if cache parse fails
+      }
+    }
+
+    // 2. Fetch fresh posts from Azure in background
     try {
       const res = await fetch(`${API_BASE}/posts`);
-      if (!res.ok) throw new Error('Failed to load posts');
-      
-      const posts: Post[] = await res.json();
-      loadingEl?.classList.add('hidden');
-
-      if (!posts || posts.length === 0) {
-        emptyEl?.classList.remove('hidden');
-        return;
-      }
-
-      if (containerEl) {
-        containerEl.innerHTML = posts.map(post => `
-          <a
-            href="/blog/${post.slug}"
-            class="group block p-6 bg-slate-900/60 border border-slate-800 rounded-xl hover:border-cyan-500/50 transition-all duration-200 hover:-translate-y-0.5"
-          >
-            ${post.coverImage ? `
-              <img
-                src="${post.coverImage}"
-                alt="${post.title}"
-                class="w-full h-48 sm:h-64 object-cover rounded-lg mb-6 border border-slate-800 group-hover:border-slate-700 transition"
-              />
-            ` : ''}
-
-            <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-3">
-              <time datetime="${post.createdAt}">
-                ${new Date(post.createdAt).toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric'
-                })}
-              </time>
-              <span class="text-cyan-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                Read article &rarr;
-              </span>
-            </div>
-
-            <h2 class="text-2xl font-bold text-slate-100 group-hover:text-cyan-400 transition mb-3">
-              ${post.title}
-            </h2>
-
-            <p class="text-slate-400 text-sm line-clamp-3 leading-relaxed">
-              ${post.summary}
-            </p>
-          </a>
-        `).join('');
+      if (res.ok) {
+        const freshPosts: Post[] = await res.json();
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(freshPosts));
+        displayPosts(freshPosts);
       }
     } catch (err) {
-      loadingEl?.classList.add('hidden');
-      if (errorEl) {
-        errorEl.textContent = 'Backend API is currently unreachable.';
-        errorEl.classList.remove('hidden');
+      if (!cachedData) {
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error-msg');
+        loadingEl?.classList.add('hidden');
+        if (errorEl) {
+          errorEl.textContent = 'Backend API is currently unreachable.';
+          errorEl.classList.remove('hidden');
+        }
       }
     }
   }

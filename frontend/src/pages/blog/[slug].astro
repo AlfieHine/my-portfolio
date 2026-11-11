@@ -70,6 +70,7 @@ const readingTime = Math.max(1, Math.ceil(wordCount / 200));
     <div class="mb-8 flex items-center justify-between">
       <a
         href="/blog"
+        data-astro-reload
         class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:border-cyan-500/40 transition group"
       >
         <span class="group-hover:-translate-x-0.5 transition-transform">&larr;</span> Back to articles
@@ -86,7 +87,7 @@ const readingTime = Math.max(1, Math.ceil(wordCount / 200));
       <div class="p-8 bg-slate-900/60 border border-red-500/30 rounded-2xl text-center backdrop-blur-md shadow-2xl my-12">
         <h1 class="text-2xl font-bold text-slate-100 mb-2">Article Unavailable</h1>
         <p class="text-slate-400 font-mono text-sm max-w-md mx-auto mb-6">{errorMsg}</p>
-        <a href="/blog" class="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition inline-block">
+        <a href="/blog" data-astro-reload class="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition inline-block">
           Return to Blog Index
         </a>
       </div>
@@ -150,6 +151,7 @@ const readingTime = Math.max(1, Math.ceil(wordCount / 200));
             </button>
             <a
               href="/blog"
+              data-astro-reload
               class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition flex items-center gap-1.5"
             >
               &larr; Back to articles

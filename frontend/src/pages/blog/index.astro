@@ -57,11 +57,18 @@ import Layout from '../../layouts/Layout.astro';
     loadingEl?.classList.add('hidden');
 
     if (!posts || posts.length === 0) {
-      emptyEl?.classList.remove('hidden');
+      if (emptyEl) emptyEl.classList.remove('hidden');
+      if (containerEl) {
+        containerEl.innerHTML = '';
+        containerEl.classList.add('hidden');
+      }
       return;
     }
 
+    if (emptyEl) emptyEl.classList.add('hidden');
+    
     if (containerEl) {
+      containerEl.classList.remove('hidden');
       containerEl.innerHTML = posts.map(post => `
         <a
           href="/blog/${post.slug}"

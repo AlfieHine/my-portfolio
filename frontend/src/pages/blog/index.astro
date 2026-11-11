@@ -48,6 +48,7 @@ import Layout from '../../layouts/Layout.astro';
 
   const API_BASE = import.meta.env.PUBLIC_API_URL || 'https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api';
   const STORAGE_KEY = 'cached_blog_posts';
+  let isFetching = false;
 
   function displayPosts(posts: Post[]) {
     const loadingEl = document.getElementById('loading');
@@ -119,6 +120,10 @@ import Layout from '../../layouts/Layout.astro';
       }
     }
 
+    // Prevent overlapping request stacks if API is slow/cold-starting
+    if (isFetching) return;
+    isFetching = true;
+
     // 2. Fetch fresh posts from Azure in background
     try {
       const res = await fetch(`${API_BASE}/posts`);
@@ -137,14 +142,18 @@ import Layout from '../../layouts/Layout.astro';
           errorEl.classList.remove('hidden');
         }
       }
+    } finally {
+      isFetching = false;
     }
   }
 
-  // Initial load
+  // Initial load on entry
   loadPosts();
 
-  // Auto-poll Azure for new articles every 30 seconds while staying on the page
+  // Auto-poll Azure every 60 seconds ONLY when the tab is focused
   setInterval(() => {
-    loadPosts();
-  }, 30000);
+    if (document.visibilityState === 'visible') {
+      loadPosts();
+    }
+  }, 60000);
 </script>

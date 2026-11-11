@@ -12,8 +12,7 @@ export async function getStaticPaths() {
     const posts = await res.json();
 
     return posts.map((post: any) => ({
-      params: { slug: post.slug },
-      props: { post },
+      params: { slug: post.slug }
     }));
   } catch (e) {
     console.error('Error fetching paths in getStaticPaths:', e);
@@ -22,14 +21,14 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-let { post } = Astro.props;
+let post: any = null;
 
 let htmlContent = '';
 let errorMsg = '';
 
 const API_BASE = import.meta.env.PUBLIC_API_URL || 'https://func-cloudresume-fsmbrj7k2vlvo.azurewebsites.net/api';
 
-if (!post && slug) {
+if (slug) {
   try {
     const res = await fetch(`${API_BASE}/posts/${slug}`);
     if (res.ok) {

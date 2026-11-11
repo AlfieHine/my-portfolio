@@ -133,5 +133,11 @@ import Layout from '../../layouts/Layout.astro';
     }
   }
 
+  // Initial load
   loadPosts();
+
+  // Auto-poll Azure for new articles every 30 seconds while staying on the page
+  setInterval(() => {
+    loadPosts();
+  }, 30000);
 </script>

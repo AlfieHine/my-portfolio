@@ -147,8 +147,13 @@ import Layout from '../../layouts/Layout.astro';
     }
   }
 
-  // Initial load on entry
+  // Initial load execution
   loadPosts();
+
+  // Re-trigger revalidation on Astro view transitions / page swaps
+  document.addEventListener('astro:page-load', () => {
+    loadPosts();
+  });
 
   // Auto-poll Azure every 60 seconds ONLY when the tab is focused
   setInterval(() => {
